@@ -1,10 +1,9 @@
 "use strict";
 
-define(function(require, exports, module) {
+define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     // Placeholder
-    console.log(exports);
-    console.log(module);
+
     const placeHolder = function ($scope) {
         const vm = this;
         vm.macroService = new Services.MacroService(vm);
@@ -56,6 +55,9 @@ define(function(require, exports, module) {
         vm.addNotesColumn = (ordersNotes) => {
             //gridScope.$ctrl.gridOpts.columnDefs
             let gridScope = angular.element("view-grid").scope();
+
+            // add notes obj to parent grid scope
+            gridScope.$ctrl.__ordersNotes = ordersNotes;
 
             //"<order-grid-items actions-handler='grid.appScope.actionsHandler' item='row.entity' column='col.colDef' measurements='grid.appScope.measures' view='grid.appScope.view'></order-grid-items>"
             
@@ -109,13 +111,4 @@ define(function(require, exports, module) {
         };
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
-    // Grid notes components
-    // module.
-    //     component('greetUser', {
-    //         template: 'Hello, {{$ctrl.user}}!',
-    //         controller: function GreetUserController() {
-    //         this.user = 'world';
-    //         }
-    //       });
-    // 
 });
