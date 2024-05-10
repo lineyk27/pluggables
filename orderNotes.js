@@ -9,14 +9,35 @@ define(function(require) {
         vm.viewOrders = [];
         vm.columnShown = false;
         vm.placeholderKey = "placeholderAddOrderNotesColumn";
-        
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Set despatch date"
+
+        vm.setLoading = (isLoading) => {
+            if (isLoading) {
+                vm.isEnabled = (itemKey) => false;
+                vm.agButton.html(vm.loadingHtml);
+            }
+            else{
+                vm.isEnabled = (itemKey) => true;
+                vm.agButton.html(vm.buttonInnerHTML);
+            }
+        };
+
+        angular.element(document).ready(function () {
+            vm.button = document.querySelectorAll(`button[key='${vm.placeholderKey}']`)[0];
+            vm.agButton = angular.element(vm.button);
+            vm.buttonInnerHTML = vm.button.innerHTML;
+            console.log(vm.buttonInnerHTML);
+        });
+
         vm.getItems = () => ([{
             key: vm.placeholderKey,
             text: "Show notes",
             icon: "fa func fa-print"
         }]);
-        
-        vm.isEnabled = (itemKey) => true;
+
+        vm.isEnabled = (itemKey) => {
+            return $scope.viewStats.ViewId == 52;
+        };
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
