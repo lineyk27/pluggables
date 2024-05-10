@@ -8,16 +8,17 @@ define(function(require) {
         vm.macroService = new Services.MacroService(vm);
         vm.viewOrders = [];
         vm.columnShown = false;
+        vm.placeholderKey = "placeholderAddOrderNotesColumn";
         
         vm.getItems = () => ([{
-            key: "placeholderAddOrderNotesColumn",
+            key: vm.placeholderKey,
             text: "Show notes",
-            icon: "fa fa-comments-o"
+            icon: "fa func fa-print"
         }]);
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
-            vm.addNotesColumn([]);
+            // vm.addNotesColumn([]);
 
             // if (!vm.columnShown) {
             //     let totalPages = Math.ceil(items.length / 5);
