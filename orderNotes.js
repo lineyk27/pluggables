@@ -42,7 +42,7 @@ define(function(require) {
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
-            // vm.addNotesColumn([]);
+            vm.addNotesColumn([]);
 
             // if (!vm.columnShown) {
             //     let totalPages = Math.ceil(items.length / 5);
