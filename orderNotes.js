@@ -84,7 +84,7 @@ define(function(require) {
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
             let orderIds = paginate(allOrderIds, 5, pageNumber);
 
-            vm.macroService.Run({applicationName: "OrdersNotesApp", macroName: "OrdersNotesMacro", orderIds: orderIds}, function(result) {
+            vm.macroService.Run({applicationName: "OpenOrdersNotes_Test", macroName: "OrdersNotesBulkGet", orderIds: orderIds}, function(result) {
                 if (!result.error) {
                     if (result.result.Error) {
                         Core.Dialogs.addNotify(result.result.Error, 'ERROR');
