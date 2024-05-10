@@ -3,4 +3,5 @@ function OrderNotesCell($scope, $element) {
     vm.scope = $scope;
     vm.scope.testVar = 100010;
     vm.scope.testVar2 = 1001;
+    console.log("From OrderNotesCell ctrl");
 };
