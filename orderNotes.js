@@ -114,7 +114,7 @@ define(function(require) {
 
     angular.module("openOrdersViewService")
         .component("orderNotesCell", {
-            templateUrl: "<div>order notes component</div>",
+            template: "<div>order notes component</div>",
             controller: ['$scope', function($scope){
                 const vm = this;
                 vm.scope = $scope;
