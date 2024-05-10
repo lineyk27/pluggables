@@ -67,7 +67,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<div>Test</div>",
+                cellTemplate: "<order-notes-cell></order-notes-cell>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
