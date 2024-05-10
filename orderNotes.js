@@ -111,7 +111,7 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
-    const orderNotesCellTemplate = "<div>order notes component</div>";
+    const orderNotesCellTemplate = "<div>{{JSON.stringify(notes)}}</div>";
     
     function orderNotesCellCtrl (){
         const vm = this;
