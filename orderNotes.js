@@ -39,7 +39,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-grid-notes item='row.entity'></order-grid-notes>",
+                cellTemplate: "<div>Test</div>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
