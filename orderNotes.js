@@ -40,11 +40,11 @@ define(function(require) {
         };
 
         vm.onClick = (itemKey, $event) => {
-            vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
+            vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.OrderId);
             // vm.addNotesColumn([]);
 
             if (!vm.columnShown) {
-                let totalPages = Math.ceil(items.length / 5);
+                let totalPages = Math.ceil(vm.viewOrders.length / 5);
                 vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);    
             } else {
                 vm.removeNotesColumn();
