@@ -3,7 +3,6 @@
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     // Placeholder
-
     const placeHolder = function ($scope) {
         const vm = this;
         vm.macroService = new Services.MacroService(vm);
@@ -67,7 +66,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-notes-cell></order-notes-cell>",
+                cellTemplate: "<order-notes-cell item='row.entity' notes='grid.appScope.__ordersNotes'></order-notes-cell>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
@@ -112,13 +111,24 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
+    const orderNotesCellTemplate = "<div>order notes component</div>";
+    
+    function orderNotesCellCtrl ($scope){
+        const vm = this;
+        vm.scope = $scope;
+        vm.scope.custVar = 123;
+        console.log(vm.scope.item);
+        console.log(vm.scope.notes);
+    }
+
+    //Open orders notes cell component
     angular.module("openOrdersViewService")
         .component("orderNotesCell", {
-            template: "<div>order notes component</div>",
-            controller: ['$scope', function($scope){
-                const vm = this;
-                vm.scope = $scope;
-                vm.scope.custVar = 123;
-            }]
+            template: orderNotesCellTemplate,
+            bindings: {
+                item: "=",
+                notes: "="
+            },
+            controller: ['$scope', orderNotesCellCtrl]
         });
 });
