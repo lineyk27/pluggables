@@ -111,7 +111,7 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
-    const orderNotesCellTemplate = "<div>{{JSON.stringify(notes)}}</div>";
+    const orderNotesCellTemplate = "<div>{{JSON.stringify($ctrl.orderNotes)}}</div>";
     
     function orderNotesCellCtrl (){
         const vm = this;
@@ -119,6 +119,8 @@ define(function(require) {
             vm.custVar = 123;
             console.log(vm.item);
             console.log(vm.notes);
+            vm.orderNotes = angular.copy(vm.notes);
+            vm.order = angular.copy(vm.item);
         }
     }
 
