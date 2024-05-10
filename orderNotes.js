@@ -5,7 +5,7 @@ define(function(require) {
     
     const placeHolder = function ($scope) {
         const vm = this;
-        vm.macroService = new 
+        vm.macroService = new Services.MacroService(vm);
         vm.viewOrders = [];
         vm.columnShown = false;
         
