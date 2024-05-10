@@ -113,12 +113,11 @@ define(function(require) {
 
     const orderNotesCellTemplate = "<div>order notes component</div>";
     
-    function orderNotesCellCtrl ($scope){
+    function orderNotesCellCtrl (){
         const vm = this;
-        vm.scope = $scope;
-        vm.scope.custVar = 123;
-        console.log(vm.scope.item);
-        console.log(vm.scope.notes);
+        vm.custVar = 123;
+        console.log(vm.item);
+        console.log(vm.notes);
     }
 
     //Open orders notes cell component
@@ -129,6 +128,6 @@ define(function(require) {
                 item: "=",
                 notes: "="
             },
-            controller: ['$scope', orderNotesCellCtrl]
+            controller: orderNotesCellCtrl
         });
 });
