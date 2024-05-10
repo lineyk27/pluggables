@@ -33,20 +33,20 @@ define(function(require) {
 
             //"<order-grid-items actions-handler='grid.appScope.actionsHandler' item='row.entity' column='col.colDef' measurements='grid.appScope.measures' view='grid.appScope.view'></order-grid-items>"
             
-            let columnDefinition = {
-                sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
-                code: "NOTES",
-                name: "Notes",
-                displayName: "Notes",
-                referencedName: "Notes",
-                cellTemplate: "<div>Test</div>",
-                width: 500,
-                enableColumnMoving: true,
-                enableColumnResizing: true,
-                type: "string"
-            };
+            // let columnDefinition = {
+            //     sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
+            //     code: "NOTES",
+            //     name: "Notes",
+            //     displayName: "Notes",
+            //     referencedName: "Notes",
+            //     cellTemplate: "<div>Test</div>",
+            //     width: 500,
+            //     enableColumnMoving: true,
+            //     enableColumnResizing: true,
+            //     type: "string"
+            // };
 
-            gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
+            // gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
 
         };
 
