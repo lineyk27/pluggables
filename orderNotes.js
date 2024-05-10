@@ -32,7 +32,7 @@ define(function(require) {
         vm.getItems = () => ([{
             key: vm.placeholderKey,
             text: "Show notes",
-            icon: "fa func fa-print"
+            icon: "fa func fa-comments"
         }]);
 
         vm.isEnabled = (itemKey) => {
