@@ -111,4 +111,14 @@ define(function(require) {
         };
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
+
+    angular.module("openOrdersViewService")
+        .component("orderNotesCell", {
+            templateUrl: "<div>order notes component</div>",
+            controller: ['$scope', function($scope){
+                const vm = this;
+                vm.scope = $scope;
+                vm.scope.custVar = 123;
+            }]
+        });
 });
