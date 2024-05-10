@@ -41,14 +41,14 @@ define(function(require) {
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
-            vm.addNotesColumn([]);
+            // vm.addNotesColumn([]);
 
-            // if (!vm.columnShown) {
-            //     let totalPages = Math.ceil(items.length / 5);
-            //     vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);    
-            // } else {
-            //     vm.removeNotesColumn();
-            // }
+            if (!vm.columnShown) {
+                let totalPages = Math.ceil(items.length / 5);
+                vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);    
+            } else {
+                vm.removeNotesColumn();
+            }
         };
 
         vm.addNotesColumn = (ordersNotes) => {
@@ -66,7 +66,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-notes-cell item='row.entity' notes='grid.appScope.__ordersNotes'></order-notes-cell>",
+                cellTemplate: "<order-notes-cell item='row.entity' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-notes-cell>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
