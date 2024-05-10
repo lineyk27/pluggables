@@ -15,6 +15,8 @@ define(function(require) {
             text: "Show notes",
             icon: "fa func fa-print"
         }]);
+        
+        vm.isEnabled = (itemKey) => true;
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.id);
