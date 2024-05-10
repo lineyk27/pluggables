@@ -115,9 +115,11 @@ define(function(require) {
     
     function orderNotesCellCtrl (){
         const vm = this;
-        vm.custVar = 123;
-        console.log(vm.item);
-        console.log(vm.notes);
+        vm.$onInit = function () {
+            vm.custVar = 123;
+            console.log(vm.item);
+            console.log(vm.notes);
+        }
     }
 
     //Open orders notes cell component
