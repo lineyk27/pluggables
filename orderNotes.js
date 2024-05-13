@@ -45,7 +45,7 @@ define(function(require) {
 
             if (!vm.columnShown) {
                 let totalPages = Math.ceil(vm.viewOrders.length / 5);
-                vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);    
+                vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);
             } else {
                 vm.removeNotesColumn();
             }
@@ -74,13 +74,14 @@ define(function(require) {
             };
 
             gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
-
+            vm.columnShown = true;
         };
 
         vm.removeNotesColumn = () => {
             let gridScope = angular.element("view-grid").scope();
             let colInd = gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
             gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
+            vm.columnShown = false;
         };
 
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
