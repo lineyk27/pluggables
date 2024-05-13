@@ -116,7 +116,7 @@ define(function(require) {
 
     const orderNotesCellTemplate = `
     <div>
-        <span ng-repeat="note in vm.orderNotes">{{note.Note}}</span>
+        <p ng-repeat="note in vm.orderNotes track by note.OrderNoteId">{{note.Note}}</p>
     </div>
     `;
     
