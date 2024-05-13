@@ -115,9 +115,9 @@ define(function(require) {
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
     const orderNotesCellTemplate = `
-    <div>{{$ctrl.orderNotes}}</div>
-    
-    
+    <div>
+        <span ng-repeat="note in vm.orderNotes">{{note.Note}}</span>
+    </div>
     `;
     
     function orderNotesCellCtrl (){
