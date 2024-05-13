@@ -9,7 +9,13 @@ define(function(require) {
         vm.viewOrders = [];
         vm.columnShown = false;
         vm.placeholderKey = "placeholderAddOrderNotesColumn";
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Set despatch date"
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
+
+        vm.getItems = () => ([{
+            key: vm.placeholderKey,
+            text: "Show notes",
+            icon: "fa func fa-comments"
+        }]);
 
         vm.setLoading = (isLoading) => {
             if (isLoading) {
@@ -28,12 +34,6 @@ define(function(require) {
             vm.buttonInnerHTML = vm.button.innerHTML;
             console.log(vm.buttonInnerHTML);
         });
-
-        vm.getItems = () => ([{
-            key: vm.placeholderKey,
-            text: "Show notes",
-            icon: "fa func fa-comments"
-        }]);
 
         vm.isEnabled = (itemKey) => {
             return $scope.viewStats.ViewId == 52;
@@ -78,7 +78,9 @@ define(function(require) {
         };
 
         vm.removeNotesColumn = () => {
-
+            let gridScope = angular.element("view-grid").scope();
+            let colInd = gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
+            gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
         };
 
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
@@ -111,7 +113,11 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
-    const orderNotesCellTemplate = `<div>{{$ctrl.orderNotes}}</div>`;
+    const orderNotesCellTemplate = `
+    <div>{{$ctrl.orderNotes}}</div>
+    
+    
+    `;
     
     function orderNotesCellCtrl (){
         const vm = this;
