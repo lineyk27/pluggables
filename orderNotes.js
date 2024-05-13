@@ -133,6 +133,7 @@ define(function(require) {
     angular.module("openOrdersViewService")
         .component("orderNotesCell", {
             template: orderNotesCellTemplate,
+            controllerAs: "vm",
             bindings: {
                 item: "=",
                 notes: "="
