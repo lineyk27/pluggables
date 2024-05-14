@@ -21,8 +21,7 @@ define(function(require) {
             if (isLoading) {
                 vm.isEnabled = (itemKey) => false;
                 vm.agButton.html(vm.loadingHtml);
-            }
-            else{
+            } else {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
@@ -41,7 +40,6 @@ define(function(require) {
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.OrderId);
-            // vm.addNotesColumn([]);
 
             if (!vm.columnShown) {
                 let totalPages = Math.ceil(vm.viewOrders.length / 5);
@@ -113,10 +111,12 @@ define(function(require) {
         };
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
-
+    // top right bot left
     const orderNotesCellTemplate = `
     <div style="overflow-y: auto;">
-        <p ng-repeat="note in vm.orderNotes track by note.OrderNoteId">{{note.Note}}</p>
+        <div style="margin: 10px 20px 10px 20px">
+            <p ng-repeat="note in vm.orderNotes track by note.OrderNoteId">{{$index + 1}}. {{note.Note}}</p>
+        </div>
     </div>
     `;
     
