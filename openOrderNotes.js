@@ -90,7 +90,9 @@ define(function(require) {
         vm.removeNotesColumn = () => {
             let gridScope = angular.element("view-grid").scope();
             let colInd = gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
-            gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
+            if(colInd > -1){
+                gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
+            }
             vm.columnShown = false;
             vm.agButton.html(vm.buttonInnerHTML);
         };
