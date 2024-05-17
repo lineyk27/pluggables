@@ -223,6 +223,10 @@ define(function(require) {
         const vm = this;
         vm.currentPage = 1;
 
+        vm.itemWatcher = $scope.$watch(() => vm.item, function(newVal, oldVal){
+            vm.$onInit();
+        }, true);
+
         vm.$onInit = function () {
             vm.orderNotes = angular.copy(vm.notes);
             vm.order = angular.copy(vm.item);
