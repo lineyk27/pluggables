@@ -298,7 +298,7 @@ define(function(require) {
                             let temp = vm.orderNotes.length;
                             vm.orderNotes.splice(index, 1);
                             vm.saveNotes();
-                            if (index === temp && vm.orderNotes.length % 3 == 0 && vm.currentPage > 1) {
+                            if ((index + 1) === temp && vm.orderNotes.length % 3 == 0 && vm.currentPage > 1) {
                                 vm.currentPage--;
                             }
                         }
