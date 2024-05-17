@@ -42,11 +42,13 @@ define(function(require) {
             return true;
         };
 
-        // vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders, function(newVal, oldVal){
-        //     if(!Arrays.equals(newVal, oldVal)){
-        //         console.log("orders loaded");
-        //     }
-        // }, true);
+        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders, function(newVal, oldVal){
+            let oldIds = oldVal.map(i => i.OrderId);
+            let newIds = oldVal.map(i => i.OrderId);
+            if(!Arrays.equals(newIds, oldIds)){
+                console.log("orders loaded");
+            }
+        }, true);
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.OrderId);
