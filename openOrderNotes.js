@@ -174,6 +174,7 @@ define(function(require) {
                 max-height: 90%;
                 margin: 5px;
                 border-radius: 5px;
+                justify-content: space-around;
             }
             .order-note-text{
                 max-width: 85%;
