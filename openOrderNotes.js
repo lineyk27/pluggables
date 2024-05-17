@@ -185,7 +185,7 @@ define(function(require) {
         </style>
         <div style="height: 100%;">
             <div class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
-                <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by note.OrderNoteId" class="order-note-wrapper">
+                <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
                         <div class="order-note-text">
                             <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
