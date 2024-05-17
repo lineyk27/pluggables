@@ -210,10 +210,10 @@ define(function(require) {
                 </button>
                 <div class="flex-container flex-column">
                 <div style="width: 20px;">
-                    <div ng-show="vm.currentPage > 1" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                 </div>
                 <div style="width: 20px;">
-                    <div ng-show="vm.currentPage < vm.totalPages()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
                 </div>
             </div>
