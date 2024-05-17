@@ -137,7 +137,7 @@ define(function(require) {
             }
             .notes-wrapper{
                 display: block;
-                overflow-y: auto;
+                overflow: hidden;
             }
             .flex-container{
                 display: flex;
@@ -197,7 +197,7 @@ define(function(require) {
                 </div>
             </div>
             <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
-                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 5px; line-height: 15px;height: 25px;" >
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     New note
                 </button>
                 <div class="flex-container flex-column">
