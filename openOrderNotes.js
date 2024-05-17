@@ -45,7 +45,7 @@ define(function(require) {
         vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders, function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
             let newIds = newVal.map(i => i.OrderId);
-            if (!Arrays.equals(newIds, oldIds)) {
+            if (newIds.toString() !== oldIds.toString()) {
                 vm.columnShown = false;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
