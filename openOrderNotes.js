@@ -223,7 +223,7 @@ define(function(require) {
         const vm = this;
         vm.currentPage = 1;
 
-        vm.itemWatcher = $scope.$watch(() => vm.item, function(newVal, oldVal){
+        vm.itemWatcher = $scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
             vm.$onInit();
         }, true);
 
