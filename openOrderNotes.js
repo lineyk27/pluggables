@@ -211,10 +211,7 @@ define(function(require) {
             </div>
         </div>
         `;
-        //<i class="fa fa-chevron-left" aria-hidden="true"></i>
-        //<i class="fa fa-chevron-right" aria-hidden="true"></i>
-
-    //lw-help-tooltip text="Saturday Order"
+    
     function OrderNotesCellCtrl ($scope){
         const vm = this;
         vm.currentPage = 1;
@@ -295,6 +292,7 @@ define(function(require) {
 
         vm.saveNotes = function(){
             new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.orderNotes, function (result) {
+                $scope.$apply();
                 if (result.error) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
