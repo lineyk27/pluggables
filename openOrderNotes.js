@@ -219,11 +219,12 @@ define(function(require) {
         </div>
         `;
     
-    function OrderNotesCellCtrl (){
+    function OrderNotesCellCtrl ($scope){
         const vm = this;
+        vm.scope = $scope;
         vm.currentPage = 1;
 
-        vm.itemWatcher = $scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
+        vm.itemWatcher = vm.scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
             vm.$onInit();
         }, true);
 
