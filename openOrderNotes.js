@@ -42,7 +42,7 @@ define(function(require) {
             return true;
         };
 
-        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders_filtered, function(newVal, oldVal){
+        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders, function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
             let newIds = newVal.map(i => i.OrderId);
             if (newIds.toString() !== oldIds.toString()) {
@@ -52,7 +52,7 @@ define(function(require) {
         }, true);
 
         vm.onClick = (itemKey, $event) => {
-            vm.viewOrders = $scope.viewStats.orders_filtered.map(i => i.OrderId);
+            vm.viewOrders = $scope.viewStats.orders.map(i => i.OrderId);
 
             if (!vm.columnShown) {
                 vm.setLoading(true);
