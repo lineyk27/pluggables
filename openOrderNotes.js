@@ -60,7 +60,7 @@ define(function(require) {
             }
             if (!vm.columnShown) {
                 vm.setLoading(true);
-                let totalPages = Math.ceil(vm.viewOrders.length / 5);
+                let totalPages = Math.ceil(vm.viewOrders.length / 100);
                 vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);
             } else {
                 vm.removeNotesColumn();
@@ -105,7 +105,7 @@ define(function(require) {
         };
 
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
-            let orderIds = paginate(allOrderIds, 5, pageNumber);
+            let orderIds = paginate(allOrderIds, 100, pageNumber);
 
             vm.macroService.Run({applicationName: "OpenOrdersNotes", macroName: "GetOrderNotesBulk", orderIds: orderIds}, function(result) {
                 if (!result.error) {
