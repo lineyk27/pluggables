@@ -224,7 +224,6 @@ define(function(require) {
         vm.addPage = function ($event, page) {
             $event.stopPropagation();
             vm.currentPage += page;
-            vm.$apply();
         }
 
         vm.totalPages = function () {
@@ -292,7 +291,6 @@ define(function(require) {
 
         vm.saveNotes = function(){
             new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.orderNotes, function (result) {
-                vm.$apply();
                 if (result.error) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
