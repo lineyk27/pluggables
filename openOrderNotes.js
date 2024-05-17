@@ -165,7 +165,7 @@ define(function(require) {
                 height: 90%;
                 min-height: 90%; 
                 max-height: 90%;
-                margin: 10px;
+                margin: 5px;
                 border-radius: 5px;
             }
             .order-note-text{
@@ -179,7 +179,7 @@ define(function(require) {
                 height: 100%;
                 overflow: hidden;
                 display: -webkit-box;
-                -webkit-line-clamp: 5;
+                -webkit-line-clamp: 4;
                 -webkit-box-orient: vertical;
             }
         </style>
