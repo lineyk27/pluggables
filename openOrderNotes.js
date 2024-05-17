@@ -295,8 +295,12 @@ define(function(require) {
                     async (event) => {
                         if (event.action == "YES") {
                             const index = vm.orderNotes.indexOf(note);
+                            let temp = vm.orderNotes.length;
                             vm.orderNotes.splice(index, 1);
                             vm.saveNotes();
+                            if (index === temp && vm.orderNotes.length % 3 == 0 && vm.currentPage > 1) {
+                                vm.currentPage--;
+                            }
                         }
                     }
             }, self.options);
