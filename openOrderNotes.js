@@ -98,7 +98,7 @@ define(function(require) {
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
             let orderIds = paginate(allOrderIds, 5, pageNumber);
 
-            vm.macroService.Run({applicationName: "OpenOrdersNotes_Test", macroName: "OrdersNotesBulkGet", orderIds: orderIds}, function(result) {
+            vm.macroService.Run({applicationName: "OpenOrdersNotes", macroName: "GetOrderNotesBulk", orderIds: orderIds}, function(result) {
                 if (!result.error) {
                     if (result.result.Error) {
                         Core.Dialogs.addNotify(result.result.Error, 'ERROR');
@@ -212,7 +212,7 @@ define(function(require) {
         //<i class="fa fa-chevron-left" aria-hidden="true"></i>
         //<i class="fa fa-chevron-right" aria-hidden="true"></i>
 
-    
+    //lw-help-tooltip text="Saturday Order"
     function OrderNotesCellCtrl ($scope){
         const vm = this;
         vm.currentPage = 1;
