@@ -214,6 +214,7 @@ define(function(require) {
     
     function OrderNotesCellCtrl ($scope){
         const vm = this;
+        vm.scope = $scope;
         vm.currentPage = 1;
 
         vm.$onInit = function () {
@@ -224,7 +225,7 @@ define(function(require) {
         vm.addPage = function ($event, page) {
             $event.stopPropagation();
             vm.currentPage += page;
-            $scope.$apply();
+            vm.scope.$apply();
         }
 
         vm.totalPages = function () {
@@ -292,7 +293,7 @@ define(function(require) {
 
         vm.saveNotes = function(){
             new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.orderNotes, function (result) {
-                $scope.$apply();
+                vm.scope.$apply();
                 if (result.error) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
