@@ -44,7 +44,7 @@ define(function(require) {
 
         vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders.map(i => i.OrderId), function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
-            
+
             let newIds = newVal.map(i => i.OrderId);
             if (newIds.toString() !== oldIds.toString()) {
                 vm.columnShown = false;
@@ -54,7 +54,10 @@ define(function(require) {
 
         vm.onClick = (itemKey, $event) => {
             vm.viewOrders = $scope.viewStats.orders.map(i => i.OrderId);
-
+            if(!vm.viewOrders.length){
+                Core.Dialogs.addNotify("No orders found", 'WARNING');
+                return;
+            }
             if (!vm.columnShown) {
                 vm.setLoading(true);
                 let totalPages = Math.ceil(vm.viewOrders.length / 5);
