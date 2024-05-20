@@ -270,11 +270,11 @@ define(function(require) {
         
                         if (index == -1) {
                             vm.orderNotes.push(event.result);
+                            vm.saveNotes("created");
                         } else {
                             vm.orderNotes[index] = event.result;
+                            vm.saveNotes("edited");
                         }
-
-                        vm.saveNotes();
                     }
                 }
             };
@@ -297,7 +297,7 @@ define(function(require) {
                             const index = vm.orderNotes.indexOf(note);
                             let temp = vm.orderNotes.length;
                             vm.orderNotes.splice(index, 1);
-                            vm.saveNotes();
+                            vm.saveNotes("deleted");
                             if ((index + 1) === temp && vm.orderNotes.length % 3 == 0 && vm.currentPage > 1) {
                                 vm.currentPage--;
                             }
@@ -306,12 +306,12 @@ define(function(require) {
             }, self.options);
         }
 
-        vm.saveNotes = function(){
+        vm.saveNotes = function(actionName){
             new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.orderNotes, function (result) {
                 if (result.error) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
-                    Core.Dialogs.addNotify("Notes saved succesfully", 'SUCCESS');
+                    Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
                 }
             })
         };
