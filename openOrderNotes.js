@@ -76,8 +76,6 @@ define(function(require) {
             gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
                 $ctrl.__ordersNotes[orderId] = notes;
             }.bind(gridScope.$ctrl);
-
-            //"<order-grid-items actions-handler='grid.appScope.actionsHandler' item='row.entity' column='col.colDef' measurements='grid.appScope.measures' view='grid.appScope.view'></order-grid-items>"
             
             let columnDefinition = {
                 sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
@@ -329,7 +327,7 @@ define(function(require) {
             bindings: {
                 item: "=",
                 notes: "=",
-                onUpdate: "="
+                onUpdate: "&"
             },
             controller: OrderNotesCellCtrl
         });
