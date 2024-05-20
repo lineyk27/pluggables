@@ -88,7 +88,10 @@ define(function(require) {
                 type: "string"
             };
 
-            gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
+            let newColumns = angular.copy(gridScope.$ctrl.gridOpts.columnDefs);
+            newColumns.push(columnDefinition);
+
+            gridScope.$ctrl.gridOpts.columnDefs = newColumns;
             vm.columnShown = true;
             vm.setLoading(false);
         };
