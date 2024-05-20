@@ -85,10 +85,13 @@ define(function(require) {
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
-                type: "string"
+                type: "string",
+                visible: false
             };
             
             gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
+            gridScope.$ctrl.gridApi.core.refresh();
+            gridScope.$ctrl.gridOpts.columnDefs[gridScope.$ctrl.gridOpts.columnDefs.length-1].visible = true;
             vm.columnShown = true;
             vm.setLoading(false);
         };
