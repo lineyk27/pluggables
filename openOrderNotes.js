@@ -332,7 +332,7 @@ define(function(require) {
             bindings: {
                 item: "=",
                 notes: "=",
-                onUpdate: "&"
+                onUpdate: "="
             },
             controller: OrderNotesCellCtrl
         });
