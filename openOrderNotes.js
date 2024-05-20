@@ -73,6 +73,9 @@ define(function(require) {
 
             // add notes obj to parent grid scope
             gridScope.$ctrl.__ordersNotes = ordersNotes;
+            gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
+                this.__ordersNotes[orderId] = notes;
+            };
 
             //"<order-grid-items actions-handler='grid.appScope.actionsHandler' item='row.entity' column='col.colDef' measurements='grid.appScope.measures' view='grid.appScope.view'></order-grid-items>"
             
