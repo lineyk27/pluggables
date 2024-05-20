@@ -81,7 +81,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-notes-cell item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-notes-cell>",
+                cellTemplate: "<div>test</div>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
