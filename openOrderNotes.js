@@ -68,10 +68,8 @@ define(function(require) {
         };
 
         vm.addNotesColumn = (ordersNotes) => {
-            //gridScope.$ctrl.gridOpts.columnDefs
             let gridScope = angular.element("view-grid").scope();
 
-            // add notes obj to parent grid scope
             gridScope.$ctrl.__ordersNotes = ordersNotes;
             gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
                 this.__ordersNotes[orderId] = notes;
