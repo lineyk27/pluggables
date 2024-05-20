@@ -90,10 +90,8 @@ define(function(require) {
             };
 
             gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
-            setTimeout(() => {
-                gridScope.$ctrl.gridOpts.columnDefs[gridScope.$ctrl.gridOpts.columnDefs.length-1].visible = true;
-                gridScopr.scope().$ctrl.gridApi.grid.refresh()
-            }, 100);
+            gridScope.$ctrl.gridOpts.columnDefs[gridScope.$ctrl.gridOpts.columnDefs.length-1].visible = true;
+            gridScopr.scope().$ctrl.gridApi.grid.refresh()
 
             vm.columnShown = true;
             vm.setLoading(false);
