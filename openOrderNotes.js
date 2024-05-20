@@ -85,7 +85,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-notes-cell item='row.entity' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-notes-cell>",
+                cellTemplate: "<order-notes-cell item='row.entity' onUpdate='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-notes-cell>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
@@ -315,6 +315,7 @@ define(function(require) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
                     Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
+                    vm.onUpdate(vm.order.OrderId, vm.orderNotes);
                 }
             })
         };
@@ -327,7 +328,8 @@ define(function(require) {
             controllerAs: "vm",
             bindings: {
                 item: "=",
-                notes: "="
+                notes: "=",
+                onUpdate: "&"
             },
             controller: OrderNotesCellCtrl
         });
