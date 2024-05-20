@@ -74,7 +74,7 @@ define(function(require) {
             // add notes obj to parent grid scope
             gridScope.$ctrl.__ordersNotes = ordersNotes;
             gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
-                $ctrl.__ordersNotes[orderId] = notes;
+                this.__ordersNotes[orderId] = notes;
             }.bind(gridScope.$ctrl);
             
             let columnDefinition = {
