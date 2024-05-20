@@ -74,6 +74,9 @@ define(function(require) {
             // add notes obj to parent grid scope
             gridScope.$ctrl.__ordersNotes = ordersNotes;
             gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
+                console.log("Update notes in allNotes collection");
+                console.log(this.__ordersNotes);
+                console.log(this);
                 this.__ordersNotes[orderId] = notes;
             };
 
