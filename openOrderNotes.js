@@ -85,10 +85,16 @@ define(function(require) {
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
-                type: "string"
+                type: "string",
+                visible: false
             };
 
             gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition);
+            setTimeout(() => {
+                gridScope.$ctrl.gridOpts.columnDefs[gridScope.$ctrl.gridOpts.columnDefs.length-1].visible = true;
+                gridScopr.scope().$ctrl.gridApi.grid.refresh()
+            }, 100);
+
             vm.columnShown = true;
             vm.setLoading(false);
         };
