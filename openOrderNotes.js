@@ -87,11 +87,8 @@ define(function(require) {
                 enableColumnResizing: true,
                 type: "string"
             };
-
-            let newColumns = angular.copy(gridScope.$ctrl.gridOpts.columnDefs);
-            newColumns.push(columnDefinition);
-
-            gridScope.$ctrl.gridOpts.columnDefs = newColumns;
+            
+            gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
             vm.columnShown = true;
             vm.setLoading(false);
         };
