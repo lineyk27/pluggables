@@ -96,7 +96,7 @@ define(function(require) {
         vm.removeNotesColumn = () => {
             let gridScope = angular.element("view-grid").scope();
             let colInd = gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
-            if(colInd > -1){
+            if (colInd > -1) {
                 gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
             }
             vm.columnShown = false;
@@ -154,6 +154,9 @@ define(function(require) {
             .flex-row{
                 flex-direction: column;
             }
+            .justify-center{
+                justify-content: center;
+            }
             .note-footer{
                 width: 100%; 
                 height: 20%;
@@ -189,9 +192,14 @@ define(function(require) {
                 -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
             }
+            .no-notes-wrapper{
+                min-height: 100%;
+                max-height: 100%;
+                align-items: center;
+            }
         </style>
         <div style="height: 100%;">
-            <div class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+            <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
                 <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
                         <div class="order-note-text">
@@ -203,17 +211,23 @@ define(function(require) {
                     </div>
                 </div>
             </div>
+            <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+                <div>No notes found</div>
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
+            </div>
             <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                    New note
+                    Add note
                 </button>
                 <div class="flex-container flex-column">
-                <div style="width: 20px;">
-                    <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                </div>
-                <div style="width: 20px;">
-                    <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    </div>
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,6 +237,7 @@ define(function(require) {
         const vm = this;
         vm.scope = $scope;
         vm.currentPage = 1;
+        vm.orderNote = [];
 
         vm.itemWatcher = vm.scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
             vm.$onInit();
