@@ -81,7 +81,7 @@ define(function(require) {
                 name: "Notes",
                 displayName: "Notes",
                 referencedName: "Notes",
-                cellTemplate: "<order-notes-cell item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-notes-cell>",
+                cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
                 width: 500,
                 enableColumnMoving: true,
                 enableColumnResizing: true,
@@ -133,7 +133,7 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
     // top right bot left
-    const orderNotesCellTemplate = `
+    const orderGridNotesTemplate = `
         <style>
             .user-note{
                 background-color: #ffc21c;
@@ -233,7 +233,7 @@ define(function(require) {
         </div>
         `;
     
-    function OrderNotesCellCtrl ($scope){
+    function OrderGridNotesCtrl ($scope){
         const vm = this;
         vm.scope = $scope;
         vm.currentPage = 1;
@@ -334,14 +334,14 @@ define(function(require) {
 
     //Open orders notes cell component
     angular.module("openOrdersViewService")
-        .component("orderNotesCell", {
-            template: orderNotesCellTemplate,
+        .component("orderGridNotes", {
+            template: orderGridNotesTemplate,
             controllerAs: "vm",
             bindings: {
                 item: "=",
                 notes: "=",
                 onUpdate: "="
             },
-            controller: OrderNotesCellCtrl
+            controller: OrderGridNotesCtrl
         });
 });
