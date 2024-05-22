@@ -104,7 +104,7 @@ define(function(require) {
         };
 
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
-            let orderIds = paginate(allOrderIds, 100, pageNumber);
+            let orderIds = paginate(allOrderIds, 250, pageNumber);
 
             vm.macroService.Run({applicationName: "NotesManager", macroName: "NotesManagerMacro", orderIds: orderIds}, function(result) {
                 if (!result.error) {
@@ -118,7 +118,7 @@ define(function(require) {
                     if (pageNumber == totalPages) {
                         finishCallback && finishCallback(ordersNotes);
                     } else {
-                        vm.loadNotes(ordersNotes, allOrderIds, pageNumber+1, totalPages, finishCallback);
+                        vm.loadNotes(ordersNotes, allOrderIds, pageNumber + 1, totalPages, finishCallback);
                     }
                 } else {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
