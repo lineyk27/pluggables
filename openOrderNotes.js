@@ -82,7 +82,7 @@ define(function(require) {
                 displayName: "Notes",
                 referencedName: "Notes",
                 cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
-                width: 500,
+                width: "*",
                 enableColumnMoving: true,
                 enableColumnResizing: true,
                 type: "string"
