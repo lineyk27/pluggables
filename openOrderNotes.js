@@ -6,7 +6,6 @@ define(function(require) {
     const orderNotes = require("modules/orderbook/scripts/orderNotes.js");
     const dialogs = require('core/dialogs');
 
-    // Placeholder
     const placeHolder = function ($scope) {
         const vm = this;
         vm.macroService = new Services.MacroService(vm);
@@ -127,12 +126,12 @@ define(function(require) {
             });
         };
 
-        function paginate(array, page_size, page_number) {// page number 1 based
+        function paginate(array, page_size, page_number) {
             return array.slice((page_number - 1) * page_size, page_number * page_size);
         };
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
-    // top right bot left
+
     const orderGridNotesTemplate = `
         <style>
             .user-note{
