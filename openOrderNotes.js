@@ -11,9 +11,9 @@ define(function(require) {
         vm.macroService = new Services.MacroService(vm);
         vm.viewOrders = [];
         vm.columnShown = false;
-        vm.placeholderKey = "placeholderAddOrderNotesColumn";
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
-        vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes"
+        vm.placeholderKey = "placeholderAddOrderNotesColumnTEST";
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes(TEST)"
+        vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes(TEST)"
 
         vm.getItems = () => ([{
             key: vm.placeholderKey,
@@ -105,7 +105,7 @@ define(function(require) {
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
             let orderIds = paginate(allOrderIds, 250, pageNumber);
 
-            vm.macroService.Run({applicationName: "NotesManager", macroName: "NotesManagerMacro", orderIds: orderIds}, function(result) {
+            vm.macroService.Run({applicationName: "OpenOrdersNotes_Test", macroName: "GetOrderNotesBulk", orderIds: orderIds}, function(result) {
                 if (!result.error) {
                     if (result.result.Error) {
                         Core.Dialogs.addNotify(result.result.Error, 'ERROR');
@@ -236,7 +236,8 @@ define(function(require) {
         const vm = this;
         vm.scope = $scope;
         vm.currentPage = 1;
-        vm.orderNote = [];
+        vm.orderNotes = [];
+        vm.order = {};
 
         vm.itemWatcher = vm.scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
             vm.$onInit();
