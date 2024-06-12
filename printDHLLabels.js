@@ -60,6 +60,8 @@ define(function(require) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify(result.result.ErrorMessage, 'ERROR');
+                        vm.setLoading(false);
+                        return;
                     };
                     documents = documents.concat(result.result.OrderLabels);
                     if (pageNumber == totalPages) {
