@@ -15,7 +15,7 @@ define(function(require) {
         vm.getItems = () => ([{
             key: vm.buttonPlaceholderKey,
             text: "Print shipping documents",
-            icon: "fa func fa-truck"
+            icon: "fa-print"
         }]);
 
         vm.setLoading = (isLoading) => {
@@ -59,7 +59,7 @@ define(function(require) {
             vm.macroService.Run({applicationName: "2544_GenerateDHLGermanyDocs_TEST", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
-                        Core.Dialogs.addNotify(result.result.ErrorMessage, 'ERROR');
+                        Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
                         vm.setLoading(false);
                         return;
                     };
@@ -70,40 +70,45 @@ define(function(require) {
                         await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber+1, totalPages, macroService);
                     }
                 } else {
-                    Core.Dialogs.addNotify(result.error, 'ERROR');
+                    Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
                     vm.setLoading(false);
                 }
             });
         };
 
         vm.addLabelsAndPrint = async (documents) => {
-            const resultDocument = await pdfLib.PDFDocument.create();
+            try {
+                const resultDocument = await pdfLib.PDFDocument.create();
 
-            for (let i = 0; i < documents.length; i++) {
-                for (let j = 0; j < documents[i].Labels.length; j++){
-                    let packageLabels = documents[i].Labels[j];
-
-                    let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
-                    let returnInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ReturnLabelTemplateBase64);
-
-                    shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, 0, 10, 320, 320);
-                    returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, 0, 10, 320, 320);
-
-                    let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
-                    let returnPages = await resultDocument.copyPages(returnInvoiceDocument, getDocumentIndices(returnInvoiceDocument));
-                    
-                    shipingPages.forEach(page => resultDocument.addPage(page));
-                    returnPages.forEach(page => resultDocument.addPage(page));
+                for (let i = 0; i < documents.length; i++) {
+                    for (let j = 0; j < documents[i].Labels.length; j++){
+                        let packageLabels = documents[i].Labels[j];
+    
+                        let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
+                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, 0, 10, 320, 320);
+                        let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
+                        shipingPages.forEach(page => resultDocument.addPage(page));
+    
+                        if (!!documents[i].ReturnLabelTemplateBase64 && !!packageLabels.ReturnLabelBase64) {
+                            let returnInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ReturnLabelTemplateBase64);
+                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, 0, 10, 320, 320);
+                            let returnPages = await resultDocument.copyPages(returnInvoiceDocument, getDocumentIndices(returnInvoiceDocument));
+                            returnPages.forEach(page => resultDocument.addPage(page));
+                        }
+                    }
                 }
+    
+                const resultBase64 = await resultDocument.saveAsBase64();
+    
+                const blob = b64toBlob(resultBase64, 'application/pdf');
+                const blobURL = URL.createObjectURL(blob);
+                vm.printService.OpenPrintDialog(blobURL);
+    
+                vm.setLoading(false);   
+            } catch (error){
+                Core.Dialogs.addNotify({message: error.message, type: "ERROR", timeout: 5000});
+                vm.setLoading(false);
             }
-
-            const resultBase64 = await resultDocument.saveAsBase64();
-
-            const blob = b64toBlob(resultBase64, 'application/pdf');
-            const blobURL = URL.createObjectURL(blob);
-            vm.printService.OpenPrintDialog(blobURL);
-
-            vm.setLoading(false);
         };
 
         async function addImageToPdfFitInBox(pdfDocument, pngImageBase64, boxX, boxY, boxWidth, boxHeight){        
