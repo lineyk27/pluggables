@@ -83,15 +83,38 @@ define(function(require) {
                 for (let i = 0; i < documents.length; i++) {
                     for (let j = 0; j < documents[i].Labels.length; j++){
                         let packageLabels = documents[i].Labels[j];
-    
+                        
                         let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
-                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, 0, 10, 320, 320);
+                        let labelPageIndex = 0;
+
+                        if (packageLabels.ItemsCount > 5){
+                            if (shippingInvoiceDocument.getPageCount() > 1) {
+                                labelPageIndex = getPageCount() - 1;
+                            } else {
+                                shippingInvoiceDocument.addPage();
+                                labelPageIndex = 1;
+                            }
+                        }
+
+                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 10, 320, 320);
                         let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
                         shipingPages.forEach(page => resultDocument.addPage(page));
     
                         if (!!documents[i].ReturnLabelTemplateBase64 && !!packageLabels.ReturnLabelBase64) {
                             let returnInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ReturnLabelTemplateBase64);
-                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, 0, 10, 320, 320);
+
+                            let returnLabelPageIndex = 0;
+
+                            if (packageLabels.ItemsCount > 5){
+                                if (returnInvoiceDocument.getPageCount() > 1) {
+                                    returnLabelPageIndex = getPageCount() - 1;
+                                } else {
+                                    returnLabelPageIndex.addPage();
+                                    labelPageIndex = 1;
+                                }
+                            }
+
+                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, returnLabelPageIndex, 0, 10, 320, 320);
                             let returnPages = await resultDocument.copyPages(returnInvoiceDocument, getDocumentIndices(returnInvoiceDocument));
                             returnPages.forEach(page => resultDocument.addPage(page));
                         }
@@ -111,19 +134,19 @@ define(function(require) {
             }
         };
 
-        async function addImageToPdfFitInBox(pdfDocument, pngImageBase64, boxX, boxY, boxWidth, boxHeight){        
+        async function addImageToPdfFitInBox(pdfDocument, pngImageBase64, pageNumber, boxX, boxY, boxWidth, boxHeight){        
             let embeddedImage = await pdfDocument.embedPng(pngImageBase64);
             const {width: imageWidth, height: imageHeight } = embeddedImage.size();
         
             let [newImageWidth, newImageHeight] = reduceSizeWithProportion(imageWidth, imageHeight, boxWidth, boxHeight);
         
-            let firstPage = pdfDocument.getPages()[0];
+            let labelPage = pdfDocument.getPages()[pageNumber];
 
-            let pageSize = firstPage.getSize();
+            let pageSize = labelPage.getSize();
             
             boxX = (pageSize.width - newImageWidth) / 2;
     
-            firstPage.drawImage(embeddedImage, {
+            labelPage.drawImage(embeddedImage, {
                 x: boxX,
                 y: boxY,
                 width: newImageWidth,
