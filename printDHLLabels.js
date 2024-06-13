@@ -109,7 +109,7 @@ define(function(require) {
                                 if (returnInvoiceDocument.getPageCount() > 1) {
                                     returnLabelPageIndex = returnInvoiceDocument.getPageCount() - 1;
                                 } else {
-                                    returnLabelPageIndex.addPage();
+                                    returnInvoiceDocument.addPage();
                                     labelPageIndex = 1;
                                 }
                             }
