@@ -138,7 +138,7 @@ define(function(require) {
             let embeddedImage = await pdfDocument.embedPng(pngImageBase64);
             const {width: imageWidth, height: imageHeight } = embeddedImage.size();
         
-            let [newImageWidth, newImageHeight] = reduceSizeWithProportion(imageWidth, imageHeight, boxWidth, boxHeight);
+            let [newImageWidth, newImageHeight] = reduceSizeWithProportion(imageHeight, imageWidth, boxWidth, boxHeight);
         
             let labelPage = pdfDocument.getPages()[pageNumber];
 
