@@ -147,7 +147,7 @@ define(function(require) {
             boxX = (pageSize.width - newImageWidth) / 2;
     
             labelPage.drawImage(embeddedImage, {
-                x: boxX,
+                x: boxX + newImageWidth,
                 y: boxY,
                 width: newImageWidth,
                 height: newImageHeight,
