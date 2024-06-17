@@ -195,7 +195,7 @@ define(function(require) {
                 const slice = byteCharacters.slice(offset, offset + sliceSize);
                 const byteNumbers = new Array(slice.length);
                 for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
+                    byteNumbers[i] = slice.charCodeAt(i);
                 }
                 const byteArray = new Uint8Array(byteNumbers);
                 byteArrays.push(byteArray);
