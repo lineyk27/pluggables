@@ -151,6 +151,7 @@ define(function(require) {
                 y: boxY,
                 width: newImageWidth,
                 height: newImageHeight,
+                rotate: pdfLib.degrees(90)
             });
         
             return pdfDocument;
@@ -203,11 +204,6 @@ define(function(require) {
                 type: contentType
             });
             return blob;
-        };
-
-        function handleErrors (error) {
-            console.log("Printing shipping and return labels error: ");
-            console.log(error);
         };
     };
 
