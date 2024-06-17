@@ -96,7 +96,7 @@ define(function(require) {
                             }
                         }
 
-                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 10, 450, 320);
+                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 10, 550, 320);
                         let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
                         shipingPages.forEach(page => resultDocument.addPage(page));
     
@@ -114,7 +114,7 @@ define(function(require) {
                                 }
                             }
 
-                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, returnLabelPageIndex, 0, 10, 450, 320);
+                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, returnLabelPageIndex, 0, 10, 550, 320);
                             let returnPages = await resultDocument.copyPages(returnInvoiceDocument, getDocumentIndices(returnInvoiceDocument));
                             returnPages.forEach(page => resultDocument.addPage(page));
                         }
@@ -144,10 +144,10 @@ define(function(require) {
 
             let pageSize = labelPage.getSize();
             
-            boxX = (pageSize.width - newImageWidth) / 2;
+            boxX = (pageSize.width - (pageSize.width - boxWidth));
     
             labelPage.drawImage(embeddedImage, {
-                x: boxX + newImageWidth,
+                x: boxX,
                 y: boxY,
                 width: newImageWidth,
                 height: newImageHeight,
