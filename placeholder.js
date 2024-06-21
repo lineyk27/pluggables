@@ -3,7 +3,6 @@
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     const pdfLib = require("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.js");
-
     
     const placeHolder = function ($scope) {
         const vm = this;
@@ -191,5 +190,5 @@ define(function(require) {
         };
     };
 
-    placeholderManager.register("MyInventory_RightTopButtons", placeHolder);
+    placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 });
