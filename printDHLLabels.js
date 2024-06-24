@@ -9,7 +9,7 @@ define(function(require) {
         vm.scope = $scope;
         vm.printService = new Services.PrintService(vm);
         vm.macroService = new Services.MacroService(vm);
-        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermany";
+        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
         vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
 
         vm.getItems = () => ([{
