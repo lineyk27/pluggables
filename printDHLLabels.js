@@ -14,7 +14,7 @@ define(function(require) {
 
         vm.getItems = () => ([{
             key: vm.buttonPlaceholderKey,
-            text: "Print shipping documents(TEST)",
+            text: "(TEST)Print shipping documents",
             icon: "fa-print"
         }]);
 
