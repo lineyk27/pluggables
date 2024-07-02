@@ -96,11 +96,11 @@ define(function(require) {
                             }
                         }
 
-                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 30, 550, 300);
+                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 20, 550, 305);
                         let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
                         shipingPages.forEach(page => resultDocument.addPage(page));
     
-                        if (!!documents[i].ReturnLabelTemplateBase64 && !!packageLabels.ReturnLabelBase64) {
+                        if (!!documents[i].ReturnLabelTemplateBase64) {
                             let returnInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ReturnLabelTemplateBase64);
 
                             let returnLabelPageIndex = 0;
@@ -114,7 +114,9 @@ define(function(require) {
                                 }
                             }
 
-                            returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, returnLabelPageIndex, 0, 30, 550, 300);
+                            if (!!packageLabels.ReturnLabelBase64) {
+                                returnInvoiceDocument = await addImageToPdfFitInBox(returnInvoiceDocument, packageLabels.ReturnLabelBase64, returnLabelPageIndex, 0, 20, 550, 305);
+                            }
                             let returnPages = await resultDocument.copyPages(returnInvoiceDocument, getDocumentIndices(returnInvoiceDocument));
                             returnPages.forEach(page => resultDocument.addPage(page));
                         }
