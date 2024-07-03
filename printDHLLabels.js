@@ -22,8 +22,7 @@ define(function(require) {
             if (isLoading) {
                 vm.isEnabled = (itemKey) => false;
                 vm.agButton.html(vm.loadingHtml);
-            }
-            else{
+            } else {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
@@ -51,11 +50,11 @@ define(function(require) {
             };
 
             vm.setLoading(true);
-            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 10));
+            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
         };
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
-            let orderIds = paginate(allOrderIds, 10, pageNumber);
+            let orderIds = paginate(allOrderIds, 4, pageNumber);
             vm.macroService.Run({applicationName: "2544_GenerateDHLGermanyDocs_TEST", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
@@ -63,11 +62,16 @@ define(function(require) {
                         vm.setLoading(false);
                         return;
                     };
+                    if (result.result === null) {
+                        Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000})
+                        vm.setLoading(false);
+                        return;
+                    };
                     documents = documents.concat(result.result.OrderLabels);
                     if (pageNumber == totalPages) {
                         await vm.addLabelsAndPrint(documents);
                     } else {
-                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber+1, totalPages, macroService);
+                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages, macroService);
                     }
                 } else {
                     Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
@@ -125,9 +129,12 @@ define(function(require) {
     
                 const resultBase64 = await resultDocument.saveAsBase64();
     
-                const blob = b64toBlob(resultBase64, 'application/pdf');
-                const blobURL = URL.createObjectURL(blob);
-                vm.printService.OpenPrintDialog(blobURL);
+                // const blob = b64toBlob(resultBase64, 'application/pdf');
+                // const blobURL = URL.createObjectURL(blob);
+                // vm.printService.OpenPrintDialog(blobURL);
+                
+                // Silent kiosk print
+                printPDFInNewWindow(resultBase64);
     
                 vm.setLoading(false);   
             } catch (error){
@@ -207,6 +214,22 @@ define(function(require) {
             });
             return blob;
         };
+
+        function printPDFInNewWindow(pdfBase64) {
+            const blob = b64toBlob(pdfBase64, "application/pdf");
+            const blobURL = URL.createObjectURL(blob);
+            let popup = window.open(blobURL, "", "width=1,height=1,scrollbars=no,resizable=no,toolbar=no,menubar=0,status=no,directories=0,visible=none");
+
+            if (popup == null) 
+            {
+                Core.Dialogs.addNotify({message: "Cannot open window for print", type: "ERROR", timeout: 5000});
+            }
+            popup.print();
+
+            setTimeout(() => {
+                popup.close();
+            }, 5000);
+        }
     };
 
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
