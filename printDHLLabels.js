@@ -128,12 +128,7 @@ define(function(require) {
                 }
     
                 const resultBase64 = await resultDocument.saveAsBase64();
-    
-                // const blob = b64toBlob(resultBase64, 'application/pdf');
-                // const blobURL = URL.createObjectURL(blob);
-                // vm.printService.OpenPrintDialog(blobURL);
-                
-                // Silent kiosk print
+
                 printPDFInNewWindow(resultBase64);
     
                 vm.setLoading(false);   
