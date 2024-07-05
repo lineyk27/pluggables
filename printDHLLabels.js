@@ -44,6 +44,7 @@ define(function(require) {
         });
 
         vm.onClick = async (itemKey, $event) => {
+            vm.resultDocs = [];
             let items = $scope.viewStats.selected_orders.map(i => i.id);
             
             if (!items || !items.length) {
