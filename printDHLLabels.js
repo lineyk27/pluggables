@@ -44,6 +44,7 @@ define(function(require) {
         });
 
         vm.onClick = async (itemKey, $event) => {
+            vm.resultDocs = [];
             let items = $scope.viewStats.selected_orders.map(i => i.id);
             
             if (!items || !items.length) {
@@ -113,7 +114,7 @@ define(function(require) {
 
         vm.afterLoad = async (orderIds, docs) => {
             vm.resultDocs = vm.resultDocs.concat(docs);
-            if (vm.resultDocs.length == orderIds) {
+            if (vm.resultDocs.length == orderIds.length) {
                 await vm.addLabelsAndPrint(vm.resultDocs);
             }
         };
