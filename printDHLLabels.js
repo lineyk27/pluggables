@@ -9,12 +9,13 @@ define(function(require) {
         vm.scope = $scope;
         vm.printService = new Services.PrintService(vm);
         vm.macroService = new Services.MacroService(vm);
-        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermany";
+        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
         vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
+        vm.resultDocs = [];
 
         vm.getItems = () => ([{
             key: vm.buttonPlaceholderKey,
-            text: "Print shipping documents",
+            text: "(TEST)Print shipping documents",
             icon: "fa-print"
         }]);
 
@@ -50,12 +51,47 @@ define(function(require) {
             };
 
             vm.setLoading(true);
-            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
+            // await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
+            await vm.loadParalell(items);
         };
         
-        vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
+        // vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
+        //     let orderIds = paginate(allOrderIds, 4, pageNumber);
+        //     vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
+        //         if (!result.error) {
+        //             if (result.result.IsError) {
+        //                 Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
+        //                 vm.setLoading(false);
+        //                 return;
+        //             };
+        //             if (result.result === null) {
+        //                 Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000})
+        //                 vm.setLoading(false);
+        //                 return;
+        //             };
+        //             documents = documents.concat(result.result.OrderLabels);
+        //             if (pageNumber == totalPages) {
+        //                 await vm.addLabelsAndPrint(documents);
+        //             } else {
+        //                 await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
+        //             }
+        //         } else {
+        //             Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
+        //             vm.setLoading(false);
+        //         }
+        //     });
+        // };
+
+        vm.loadParalell = async (orderIds) => {
+            const totalPages =  Math.ceil(orderIds.length / 4);
+            for (let i = 1; i <= totalPages; i++) {
+                vm.loadFilesAndPrintParalell(orderIds, i);
+            }
+        };
+
+        vm.loadFilesAndPrintParalell = async (allOrderIds, pageNumber) => {
             let orderIds = paginate(allOrderIds, 4, pageNumber);
-            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
+            vm.macroService.Run({applicationName: "2544_GenerateDHLGermanyDocs_TEST", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
@@ -67,17 +103,19 @@ define(function(require) {
                         vm.setLoading(false);
                         return;
                     };
-                    documents = documents.concat(result.result.OrderLabels);
-                    if (pageNumber == totalPages) {
-                        await vm.addLabelsAndPrint(documents);
-                    } else {
-                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
-                    }
+                    vm.afterLoad(allOrderIds, (result.result.OrderLabels));
                 } else {
                     Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
                     vm.setLoading(false);
                 }
             });
+        };
+
+        vm.afterLoad = async (orderIds, docs) => {
+            vm.resultDocs = vm.resultDocs.concat(docs);
+            if (vm.resultDocs.length == orderIds) {
+                await vm.addLabelsAndPrint(vm.resultDocs);
+            }
         };
 
         vm.addLabelsAndPrint = async (documents) => {
@@ -130,8 +168,8 @@ define(function(require) {
                 const resultBase64 = await resultDocument.saveAsBase64();
 
                 printPDFInNewWindow(resultBase64);
-    
-                vm.setLoading(false);   
+                
+                vm.setLoading(false);
             } catch (error){
                 Core.Dialogs.addNotify({message: error.message, type: "ERROR", timeout: 5000});
                 vm.setLoading(false);
