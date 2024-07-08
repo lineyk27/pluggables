@@ -52,11 +52,11 @@ define(function(require) {
             };
 
             vm.setLoading(true);
-            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 6));
+            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 10));
         };
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
-            let orderIds = paginate(allOrderIds, 6, pageNumber);
+            let orderIds = paginate(allOrderIds, 10, pageNumber);
             vm.macroService.Run({applicationName: "2544_GenerateDHLGermanyDocs_TEST", macroName: "2544_GenerateDHLDEDocs_Test", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
@@ -82,7 +82,7 @@ define(function(require) {
             });
         };
 
-        
+
         vm.addLabelsAndPrint = async (documents) => {
             try {
                 const resultDocument = await pdfLib.PDFDocument.create();
