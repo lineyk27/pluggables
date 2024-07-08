@@ -53,7 +53,6 @@ define(function(require) {
 
             vm.setLoading(true);
             await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
-            // await vm.loadParalell(items);
         };
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
@@ -81,43 +80,7 @@ define(function(require) {
                     vm.setLoading(false);
                 }
             });
-        // };
-
-        vm.loadParalell = async (orderIds) => {
-            const totalPages =  Math.ceil(orderIds.length / 4);
-            for (let i = 1; i <= totalPages; i++) {
-                vm.loadFilesAndPrintParalell(orderIds, i);
-            }
         };
-
-        // vm.loadFilesAndPrintParalell = async (allOrderIds, pageNumber) => {
-        //     let orderIds = paginate(allOrderIds, 4, pageNumber);
-        //     vm.macroService.Run({applicationName: "2544_GenerateDHLGermanyDocs_TEST", macroName: "2544_GenerateDHLDEDocs_Test", orderIds}, async function (result) {
-        //         if (!result.error) {
-        //             if (result.result.IsError) {
-        //                 Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
-        //                 vm.setLoading(false);
-        //                 return;
-        //             };
-        //             if (result.result === null) {
-        //                 Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000})
-        //                 vm.setLoading(false);
-        //                 return;
-        //             };
-        //             vm.afterLoad(allOrderIds, (result.result.OrderLabels));
-        //         } else {
-        //             Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
-        //             vm.setLoading(false);
-        //         }
-        //     });
-        // };
-
-        // vm.afterLoad = async (orderIds, docs) => {
-        //     vm.resultDocs = vm.resultDocs.concat(docs);
-        //     if (vm.resultDocs.length == orderIds.length) {
-        //         await vm.addLabelsAndPrint(vm.resultDocs);
-        //     }
-        // };
 
         vm.addLabelsAndPrint = async (documents) => {
             try {
