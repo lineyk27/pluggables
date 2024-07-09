@@ -61,8 +61,6 @@ define(function(require) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
-                        vm.setLoading(false);
-                        return;
                     };
                     if (result.result === null) {
                         Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000})
@@ -87,8 +85,14 @@ define(function(require) {
             try {
                 const resultDocument = await pdfLib.PDFDocument.create();
 
+                if (documents.length === 0) {
+                    Core.Dialogs.addNotify({message: "No orders found to print.", type: "ERROR", timeout: 5000});
+                    vm.setLoading(false);
+                    return;
+                }
+
                 for (let i = 0; i < documents.length; i++) {
-                    for (let j = 0; j < documents[i].Labels.length; j++){
+                    for (let j = 0; j < documents[i].Labels.length; j++) {
                         let packageLabels = documents[i].Labels[j];
                         
                         let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
