@@ -60,10 +60,10 @@ define(function(require) {
             vm.macroService.Run({applicationName: "2544_GenerateDHLDocs_TEST", macroName: "2544_GenerateDHLDEDocs_Test2", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
-                        Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000})
+                        Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
                     };
                     if (result.result === null) {
-                        Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000})
+                        Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000});
                         vm.setLoading(false);
                         return;
                     };
