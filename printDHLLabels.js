@@ -95,10 +95,10 @@ define(function(require) {
                     for (let j = 0; j < documents[i].Labels.length; j++) {
                         let packageLabels = documents[i].Labels[j];
                         
-                        if(!!documents[i].shippingInvoiceDocument){
+                        if (!!documents[i].shippingInvoiceDocument) {
                             let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
                             let labelPageIndex = 0;
-    
+                            
                             if (packageLabels.ItemsCount > 5){
                                 if (shippingInvoiceDocument.getPageCount() > 1) {
                                     labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
@@ -107,7 +107,7 @@ define(function(require) {
                                     labelPageIndex = 1;
                                 }
                             }
-    
+                            
                             shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 20, 550, 305);
                             let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
                             shipingPages.forEach(page => resultDocument.addPage(page));
@@ -226,13 +226,13 @@ define(function(require) {
 
             if (popup == null) 
             {
-                Core.Dialogs.addNotify({message: "Cannot open window for print", type: "ERROR", timeout: 30000});
+                Core.Dialogs.addNotify({message: "Cannot open window for print", type: "ERROR", timeout: 5000});
             }
             popup.print();
 
             setTimeout(() => {
                 popup.close();
-            }, 5000);
+            }, 30000);
         }
     };
 
