@@ -95,22 +95,24 @@ define(function(require) {
                     for (let j = 0; j < documents[i].Labels.length; j++) {
                         let packageLabels = documents[i].Labels[j];
                         
-                        let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
-                        let labelPageIndex = 0;
-
-                        if (packageLabels.ItemsCount > 5){
-                            if (shippingInvoiceDocument.getPageCount() > 1) {
-                                labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
-                            } else {
-                                shippingInvoiceDocument.addPage();
-                                labelPageIndex = 1;
+                        if(!!documents[i].shippingInvoiceDocument){
+                            let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
+                            let labelPageIndex = 0;
+    
+                            if (packageLabels.ItemsCount > 5){
+                                if (shippingInvoiceDocument.getPageCount() > 1) {
+                                    labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
+                                } else {
+                                    shippingInvoiceDocument.addPage();
+                                    labelPageIndex = 1;
+                                }
                             }
+    
+                            shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 20, 550, 305);
+                            let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
+                            shipingPages.forEach(page => resultDocument.addPage(page));
                         }
 
-                        shippingInvoiceDocument = await addImageToPdfFitInBox(shippingInvoiceDocument, packageLabels.LabelBase64, labelPageIndex, 0, 20, 550, 305);
-                        let shipingPages = await resultDocument.copyPages(shippingInvoiceDocument, getDocumentIndices(shippingInvoiceDocument));
-                        shipingPages.forEach(page => resultDocument.addPage(page));
-    
                         if (!!documents[i].ReturnLabelTemplateBase64) {
                             let returnInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ReturnLabelTemplateBase64);
 
