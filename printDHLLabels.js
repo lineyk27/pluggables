@@ -103,6 +103,7 @@ define(function(require) {
                             let labelPageIndex = 0;
                             
                             if (shippingInvoiceDocument.getPageCount() > 1){
+                                
                                 if (shippingInvoiceDocument.getPageCount() > 1) {
                                     labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
                                 } else {
@@ -121,7 +122,7 @@ define(function(require) {
 
                             let returnLabelPageIndex = 0;
 
-                            if (returnInvoiceDocument.getPageCount().ItemsCount > 5) {
+                            if (returnInvoiceDocument.getPageCount() > 1) {
                                 if (returnInvoiceDocument.getPageCount() > 1) {
                                     returnLabelPageIndex = returnInvoiceDocument.getPageCount() - 1;
                                 } else {
