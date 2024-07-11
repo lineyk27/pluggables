@@ -68,6 +68,9 @@ define(function(require) {
                         return;
                     };
                     documents = documents.concat(result.result.OrderLabels);
+                    if (result.result.OrderIdsLeft.length > 0) {
+                        allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
+                    }
                     if (pageNumber == totalPages) {
                         await vm.addLabelsAndPrint(documents);
                     } else {
