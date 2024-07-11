@@ -95,7 +95,7 @@ define(function(require) {
                     for (let j = 0; j < documents[i].Labels.length; j++) {
                         let packageLabels = documents[i].Labels[j];
                         
-                        if (!!documents[i].shippingInvoiceDocument) {
+                        if (!!documents[i].ShippingLabelTemplateBase64) {
                             let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
                             let labelPageIndex = 0;
                             
