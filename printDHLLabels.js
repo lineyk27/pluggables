@@ -74,7 +74,7 @@ define(function(require) {
                     if (pageNumber == totalPages) {
                         await vm.addLabelsAndPrint(documents);
                     } else {
-                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
+                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, Math.ceil(allOrderIds.length / 5));
                     }
                 } else {
                     Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
