@@ -9,13 +9,13 @@ define(function(require) {
         vm.scope = $scope;
         vm.printService = new Services.PrintService(vm);
         vm.macroService = new Services.MacroService(vm);
-        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
+        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermany";
         vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
         vm.resultDocs = [];
 
         vm.getItems = () => ([{
             key: vm.buttonPlaceholderKey,
-            text: "(TEST)Print shipping documents",
+            text: "Print shipping documents",
             icon: "fa-print"
         }]);
 
@@ -57,7 +57,7 @@ define(function(require) {
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
             let orderIds = paginate(allOrderIds, 5, pageNumber);
-            vm.macroService.Run({applicationName: "2544_GenerateDHLDocs_TEST", macroName: "2544_GenerateDHLDEDocs_Test2", orderIds}, async function (result) {
+            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
@@ -103,7 +103,7 @@ define(function(require) {
                             let labelPageIndex = 0;
                             
                             if (shippingInvoiceDocument.getPageCount() > 1){
-                                
+
                                 if (shippingInvoiceDocument.getPageCount() > 1) {
                                     labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
                                 } else {
