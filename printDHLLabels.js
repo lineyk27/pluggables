@@ -224,7 +224,7 @@ define(function(require) {
 
             if (popup == null) 
             {
-                Core.Dialogs.addNotify({message: "Cannot open window for print", type: "ERROR", timeout: 5000});
+                Core.Dialogs.addNotify({message: "Cannot open window for print", type: "ERROR", timeout: 30000});
             }
             popup.print();
 
