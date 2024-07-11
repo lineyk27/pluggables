@@ -68,7 +68,7 @@ define(function(require) {
                         return;
                     };
                     documents = documents.concat(result.result.OrderLabels);
-                    if (result.result.OrderIdsLeft.length > 0) {
+                    if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length > 0) {
                         allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
                     }
                     if (pageNumber == totalPages) {
@@ -102,7 +102,7 @@ define(function(require) {
                             let shippingInvoiceDocument = await pdfLib.PDFDocument.load(documents[i].ShippingLabelTemplateBase64);
                             let labelPageIndex = 0;
                             
-                            if (packageLabels.ItemsCount > 5){
+                            if (shippingInvoiceDocument.getPageCount() > 1){
                                 if (shippingInvoiceDocument.getPageCount() > 1) {
                                     labelPageIndex = shippingInvoiceDocument.getPageCount() - 1;
                                 } else {
@@ -121,7 +121,7 @@ define(function(require) {
 
                             let returnLabelPageIndex = 0;
 
-                            if (packageLabels.ItemsCount > 5) {
+                            if (returnInvoiceDocument.getPageCount().ItemsCount > 5) {
                                 if (returnInvoiceDocument.getPageCount() > 1) {
                                     returnLabelPageIndex = returnInvoiceDocument.getPageCount() - 1;
                                 } else {
