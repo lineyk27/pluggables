@@ -15,7 +15,7 @@ define(function(require) {
 
         vm.getItems = () => ([{
             key: vm.buttonPlaceholderKey,
-            text: "Print shipping documents",
+            text: "(TEST)Print shipping documents",
             icon: "fa-print"
         }]);
 
@@ -57,7 +57,7 @@ define(function(require) {
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
             let orderIds = paginate(allOrderIds, 5, pageNumber);
-            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
+            vm.macroService.Run({macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
