@@ -52,11 +52,11 @@ define(function(require) {
             };
 
             vm.setLoading(true);
-            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 5));
+            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
         };
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
-            let orderIds = paginate(allOrderIds, 5, pageNumber);
+            let orderIds = paginate(allOrderIds, 4, pageNumber);
             vm.macroService.Run({applicationName: "2544_GenerateDHLDocs_TEST", macroName: "2544_GenerateDHLDEDocs_Test", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
@@ -70,7 +70,7 @@ define(function(require) {
                     documents = documents.concat(result.result.OrderLabels);
                     if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length > 0) {
                         allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
-                        totalPages = Math.ceil(allOrderIds.length / 5);
+                        totalPages = Math.ceil(allOrderIds.length / 4);
                     }
                     if (pageNumber == totalPages) {
                         await vm.addLabelsAndPrint(documents);
