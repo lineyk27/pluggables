@@ -70,11 +70,12 @@ define(function(require) {
                     documents = documents.concat(result.result.OrderLabels);
                     if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length > 0) {
                         allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
+                        totalPages = Math.ceil(allOrderIds.length / 5);
                     }
                     if (pageNumber == totalPages) {
                         await vm.addLabelsAndPrint(documents);
                     } else {
-                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, Math.ceil(allOrderIds.length / 5));
+                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
                     }
                 } else {
                     Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
