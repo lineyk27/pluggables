@@ -34,7 +34,7 @@ define(function (require) {
                             const ngElem = angular.element(result);
 
                             ngElem.append(newButton);
-                            //$compile(newButton)($scope);
+                            $compile(newButton)($scope);
 
                             // result.src = result.src + "&email=" + session.email;
                             return;
