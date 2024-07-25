@@ -2,7 +2,7 @@
 
 define(function (require) {
 
-    $(document).ready(function ($scope) {
+    $(document).ready(function ($scope, $compile) {
         const config = { childList: true, subtree: true };
 
         function searchTree(element, matchingTitle) {
@@ -32,9 +32,8 @@ define(function (require) {
                             //printLabelsButton
                             const newButton = angular.element('<print-labels-button></print-labels-button>')
                             const ngElem = angular.element(result);
-                            //const $compile = require("$compile");
 
-                            //ngElem.append(newButton);
+                            ngElem.append(newButton);
                             //$compile(newButton)($scope);
 
                             // result.src = result.src + "&email=" + session.email;
