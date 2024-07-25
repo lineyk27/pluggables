@@ -64,7 +64,7 @@ define(function (require) {
             vm.scope = $scope;
 
             vm.doSmth = function () {
-                console.log(vm.scope);
+                console.log(vm.scope.$parent);
                 console.log("Do something");
             };
         };
