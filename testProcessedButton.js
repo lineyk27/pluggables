@@ -4,7 +4,6 @@ define(function (require) {
 
     $(document).ready(function ($scope) {
         const config = { childList: true, subtree: true };
-        const $compile = require("$compile");
 
         function searchTree(element, matchingTitle) {
             if (element && element.querySelectorAll("div[ng-controller='ProcessedOrdersModule'] .status-container") && element.baseURI.indexOf("ProcessedOrders") > - 1) {
