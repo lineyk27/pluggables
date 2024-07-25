@@ -2,8 +2,9 @@
 
 define(function (require) {
 
-    $(document).ready(function ($scope, $compile) {
+    $(document).ready(function ($scope) {
         const config = { childList: true, subtree: true };
+        const $compile = require("$compile");
 
         function searchTree(element, matchingTitle) {
             if (element && element.querySelectorAll("div[ng-controller='ProcessedOrdersModule'] .status-container") && element.baseURI.indexOf("ProcessedOrders") > - 1) {
@@ -32,9 +33,13 @@ define(function (require) {
                             //printLabelsButton
                             const newButton = angular.element('<print-labels-button></print-labels-button>')
                             const ngElem = angular.element(result);
-                            const res = $compile(newButton)($scope);
-
                             ngElem.append(newButton);
+                            const ngScope = ngElem.scope();
+
+                            require(["$compile"], function($compile){
+                                const res = $compile(newButton)(ngScope);
+                                console.log("DONE!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            });
 
                             // result.src = result.src + "&email=" + session.email;
                             return;
