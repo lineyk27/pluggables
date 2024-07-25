@@ -32,10 +32,10 @@ define(function (require) {
                             //printLabelsButton
                             const newButton = angular.element('<print-labels-button></print-labels-button>')
                             const ngElem = angular.element(result);
-                            const $compile = require("$compile");
+                            //const $compile = require("$compile");
 
                             ngElem.append(newButton);
-                            $compile(newButton);
+                            //$compile(newButton);
 
                             // result.src = result.src + "&email=" + session.email;
                             return;
