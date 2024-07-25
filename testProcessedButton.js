@@ -35,7 +35,7 @@ define(function (require) {
                             ngElem.append(newButton);
                             const ngScope = ngElem.scope();
                             const compileF = ngElem.injector().get("$compile");
-                            const res = $compile(newButton)(ngScope);
+                            const res = compileF(newButton)(ngScope);
 
                             // require(["$compile"], function($compile){
                             //     const res = $compile(newButton)(ngScope);
@@ -71,7 +71,7 @@ define(function (require) {
 
         angular.module("process-orders-proxy-layer")
             .component("printLabelsButton", {
-                template: "<div class='btn'>Print DHL docs</button>",
+                template: "<div class='btn' ng-click='vm.doSmth()'>Print DHL docs</button>",
                 controllerAs: "vm",
                 controller: PrintLabelsButton
             });
