@@ -64,9 +64,9 @@ define(function (require) {
             vm.scope = $scope;
 
             vm.doSmth = function () {
+                console.log(vm.scope);
                 console.log("Do something");
             };
-
         };
 
         angular.module("process-orders-proxy-layer")
