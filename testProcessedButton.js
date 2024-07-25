@@ -34,6 +34,7 @@ define(function (require) {
                             const ngElem = angular.element(result);
                             ngElem.append(newButton);
                             const ngScope = ngElem.scope();
+                            const compileF = ngElem.injector().get("MyService");
 
                             // require(["$compile"], function($compile){
                             //     const res = $compile(newButton)(ngScope);
