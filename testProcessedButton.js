@@ -35,8 +35,6 @@ define(function (require) {
 
                             ngElem.append(newButton);
 
-                            
-
                             // result.src = result.src + "&email=" + session.email;
                             return;
                         }
