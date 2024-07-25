@@ -36,10 +36,10 @@ define(function (require) {
                             ngElem.append(newButton);
                             const ngScope = ngElem.scope();
 
-                            require(["$compile"], function($compile){
-                                const res = $compile(newButton)(ngScope);
-                                console.log("DONE!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                            });
+                            // require(["$compile"], function($compile){
+                            //     const res = $compile(newButton)(ngScope);
+                            //     console.log("DONE!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            // });
 
                             // result.src = result.src + "&email=" + session.email;
                             return;
