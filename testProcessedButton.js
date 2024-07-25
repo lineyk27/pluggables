@@ -56,6 +56,10 @@ define(function (require) {
             const vm = this;
             vm.scope = $scope;
 
+            vm.doSmth = function () {
+                console.log("Do something");
+            };
+
         };
 
         angular.module("process-orders-proxy-layer")
