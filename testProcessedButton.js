@@ -29,6 +29,14 @@ define(function (require) {
                         if (result) {
                             console.log("Founded needed div[ng-controller='ProcessedOrdersModule'] .status-container");
                             console.log(result);
+                            //printLabelsButton
+                            const newButton = angular.element('<print-labels-button></print-labels-button>')
+                            const ngElem = angular.element(result);
+
+                            ngElem.append(newButton);
+
+                            
+
                             // result.src = result.src + "&email=" + session.email;
                             return;
                         }
@@ -45,5 +53,18 @@ define(function (require) {
             const targetNode = document.getElementsByClassName("opened-modules")[0];
             observer.observe(targetNode, config);
         }, 2000);
+
+        function PrintLabelsButton ($scope){
+            const vm = this;
+            vm.scope = $scope;
+
+        };
+
+        angular.module("process-orders-proxy-layer")
+            .component("printLabelsButton", {
+                template: "<div class='btn'>Print DHL docs</button>",
+                controllerAs: "vm",
+                controller: PrintLabelsButton
+            });
     });
 });
