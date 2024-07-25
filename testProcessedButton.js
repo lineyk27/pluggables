@@ -30,12 +30,12 @@ define(function (require) {
                             console.log("Founded needed div[ng-controller='ProcessedOrdersModule'] .status-container");
                             console.log(result);
                             //printLabelsButton
-                            const newButton = angular.element('<print-labels-button></print-labels-button>')
-                            const ngElem = angular.element(result);
-                            const $compile = require("$compile");
+                            // const newButton = angular.element('<print-labels-button></print-labels-button>')
+                            // const ngElem = angular.element(result);
+                            // const $compile = require("$compile");
 
-                            ngElem.append(newButton);
-                            $compile(newButton);
+                            // ngElem.append(newButton);
+                            // $compile(newButton);
 
                             // result.src = result.src + "&email=" + session.email;
                             return;
