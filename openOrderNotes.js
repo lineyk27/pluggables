@@ -6,6 +6,7 @@ define(function(require) {
     const orderNotes = require("modules/orderbook/scripts/orderNotes.js");
     const dialogs = require('core/dialogs');
     const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
+    const AGGridColumn = require("modules/orderbook/orders/components/stacked-view-grid/ag-grid-column");
 
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
