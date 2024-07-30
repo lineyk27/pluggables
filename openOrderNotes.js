@@ -121,7 +121,7 @@ define(function(require) {
                 sequence: nextSequence, 
                 code: 'NOTES', 
                 pinned: null, 
-                headerName: 'Notes', 
+                name: 'Notes', 
                 suppressMenu: true, 
                 cellRenderer: cellRenderer, 
                 templateId: '' 
