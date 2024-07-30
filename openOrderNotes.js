@@ -5,6 +5,16 @@ define(function(require) {
     const editOrderNoteView = require("views/Order_EditOrderNote");
     const orderNotes = require("modules/orderbook/scripts/orderNotes.js");
     const dialogs = require('core/dialogs');
+    const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
+
+    const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
+        init(params){
+            this.eGui = document.createElement('div');
+            this.childScope = params.context.$scope.$new();
+            this.eGui.innerHTML = orderGridNotesTemplate;
+            console.log(params);
+        }
+    };
 
     const placeHolder = function ($scope) {
         const vm = this;
@@ -62,13 +72,13 @@ define(function(require) {
 
             if (!vm.columnShown) {
                 vm.setLoading(true);
-                let totalPages = Math.ceil(vm.viewOrders.length / 100);
+                const totalPages = Math.ceil(vm.viewOrders.length / 100);
                 vm.loadNotes({}, vm.viewOrders, 1, totalPages, appName, vm.addNotesColumn);
             } else {
                 vm.removeNotesColumn();
             }
         };
-
+        
         vm.getAppNameByCustomer = () => {
             const session = JSON.parse(window.localStorage.getItem('SPA_auth_session'));
             if (session && session.email == 'em@feroxon.com') {
@@ -90,20 +100,25 @@ define(function(require) {
                 this.__ordersNotes[orderId] = notes;
             }.bind(gridScope.$ctrl);
             
-            let columnDefinition = {
-                sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
-                code: "NOTES",
-                name: "Notes",
-                displayName: "Notes",
-                referencedName: "Notes",
-                cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
-                width: 500,
-                enableColumnMoving: true,
-                enableColumnResizing: true,
-                type: "string"
-            };
+            // let columnDefinition = {
+            //     sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
+            //     code: "NOTES",
+            //     name: "Notes",
+            //     displayName: "Notes",
+            //     referencedName: "Notes",
+            //     cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
+            //     width: 500,
+            //     enableColumnMoving: true,
+            //     enableColumnResizing: true,
+            //     type: "string"
+            // };
+
+            const existingColumns = gridScope.$ctrl.api.gridOptions.columnDefs;
+            const nextSequence = Math.max(...existingColumns.map(o => o.sequence))
+
+            const colDef = new AGGridColumn({ sequence: nextSequence, code: 'NOTES', pinned: null, headerName: 'Notes', suppressMenu: true, cellRenderer: cellRenderer, templateId: '' });
             
-            gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
+            gridScope.$ctrl.api.gridOptions.columnDefs.push(colDef);
             vm.columnShown = true;
             vm.setLoading(false);
         };
@@ -246,7 +261,8 @@ define(function(require) {
             </div>
         </div>
         `;
-    
+
+
     function OrderGridNotesCtrl ($scope){
         const vm = this;
         vm.scope = $scope;
