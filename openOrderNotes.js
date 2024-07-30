@@ -127,6 +127,7 @@ define(function(require) {
                 templateId: '' 
             });
             
+            
             columnDefs = columnDefs.concat([colDef]);
 
             gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
