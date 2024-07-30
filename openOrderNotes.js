@@ -116,7 +116,15 @@ define(function(require) {
             const existingColumns = gridScope.$ctrl.api.gridOptions.columnDefs;
             const nextSequence = Math.max(...existingColumns.map(o => o.sequence))
 
-            const colDef = new AGGridColumn({ sequence: nextSequence, code: 'NOTES', pinned: null, headerName: 'Notes', suppressMenu: true, cellRenderer: cellRenderer, templateId: '' });
+            const colDef = new AGGridColumn({ 
+                sequence: nextSequence, 
+                code: 'NOTES', 
+                pinned: null, 
+                headerName: 'Notes', 
+                suppressMenu: true, 
+                cellRenderer: cellRenderer, 
+                templateId: '' 
+            });
             
             gridScope.$ctrl.api.gridOptions.columnDefs.push(colDef);
             vm.columnShown = true;
