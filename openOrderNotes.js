@@ -124,11 +124,11 @@ define(function(require) {
 
                 this.childScope.addPage = function ($event, page) {
                     $event.stopPropagation();
-                    this.scopeVm.currentPage += page;
+                    scopeVm.currentPage += page;
                 }
         
                 this.childScope.totalPages = function () {
-                    return Math.ceil(this.scopeVm.orderNotes.length / 3);
+                    return Math.ceil(scopeVm.orderNotes.length / 3);
                 }
         
                 this.childScope.isUserNote = function (note) {
@@ -149,7 +149,7 @@ define(function(require) {
                         element: event.target,
                         position: "BOTTOM",
                         newControl: true
-                    }, this.scopeVm.options);
+                    }, scopeVm.options);
                     
                     ctrl.onGetEvent = function (event) {
                         if (event.result) {
@@ -158,7 +158,7 @@ define(function(require) {
                                     Core.Dialogs.addNotify("Note can't be empty!", 'ERROR');
                                     return;
                                 }
-                                const index = this.scopeVm.orderNotes.indexOf(note);
+                                const index = scopeVm.orderNotes.indexOf(note);
                 
                                 if (index == -1) {
                                     scopeVm.orderNotes.push(event.result);
