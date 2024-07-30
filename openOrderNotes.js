@@ -8,6 +8,106 @@ define(function(require) {
     const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
     const AGGridColumn = require("modules/orderbook/orders/components/stacked-view-grid/ag-grid-column");
 
+    const orderGridNotesTemplate = `
+        <style>
+            .user-note{
+                background-color: #ffc21c;
+            }
+            .admin-note{
+                background-color: #fffb1c;
+            }
+            .notes-wrapper{
+                display: block;
+                overflow: hidden;
+            }
+            .flex-container{
+                display: flex;
+            }
+            .flex-column{
+                flex-direction: row;
+            }
+            .flex-row{
+                flex-direction: column;
+            }
+            .justify-center{
+                justify-content: center;
+            }
+            .note-footer{
+                width: 100%; 
+                height: 20%;
+                justify-content: space-between;
+            }
+            .page-button{
+                cursor: pointer;
+                margin-right: 5px;
+                margin-left: 5px;
+            }
+            .order-note-wrapper{
+                width: 10rem;
+            }
+            .order-note{
+                height: 90%;
+                min-height: 90%; 
+                max-height: 90%;
+                margin: 5px;
+                border-radius: 5px;
+                justify-content: space-around;
+            }
+            .order-note-text{
+                max-width: 85%;
+                min-width: 85%;
+                width: 85%;
+            }
+            .order-note-text-wrap{
+                margin: 2px;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+            }
+            .no-notes-wrapper{
+                min-height: 100%;
+                max-height: 100%;
+                align-items: center;
+            }
+        </style>
+        <div style="height: 100%;">
+            <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+                <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
+                    <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
+                        <div class="order-note-text">
+                            <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
+                        </div>
+                        <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+                <div>No notes found</div>
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
+            </div>
+            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
+                <div class="flex-container flex-column">
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    </div>
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
             this.childScope = params.context.$scope.$new();
@@ -19,7 +119,7 @@ define(function(require) {
                 this.childScope.currentPage = 1;
                 this.childScope.orderNote = [];
 
-                this.eGui.innerHTML = template;
+                this.eGui.innerHTML = orderGridNotesTemplate;
 
                 this.childScope.addPage = function ($event, page) {
                     $event.stopPropagation();
@@ -268,7 +368,7 @@ define(function(require) {
     };
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
-    const orderGridNotesTemplate = `
+    const orderGridNotes1Template = `
         <style>
             .user-note{
                 background-color: #ffc21c;
