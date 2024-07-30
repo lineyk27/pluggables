@@ -330,7 +330,7 @@ define(function(require) {
         };
 
         vm.removeNotesColumn = () => {
-            let gridScope = angular.element("view-grid").scope();
+            let gridScope = angular.element("stacked-view-grid").scope();
             let colDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
             let colInd = colDefs.findIndex(item => item.code === "NOTES");
             if (colInd > -1) {
