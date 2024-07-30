@@ -10,10 +10,105 @@ define(function(require) {
 
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
-            this.eGui = document.createElement('div');
             this.childScope = params.context.$scope.$new();
-            this.eGui.innerHTML = "<div>Test</div>";
-            console.log(params);
+            this.eGui.innerHTML = orderGridNotesTemplate;
+
+            this.eGui = document.createElement('div');
+            this.childScope.$apply(() => {
+                this.childScope.data = params.data;
+                this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.data.OrderId];
+                this.childScope.currentPage = 1;
+                this.childScope.orderNote = [];
+
+                this.eGui.innerHTML = template;
+
+                this.childScope.addPage = function ($event, page) {
+                    $event.stopPropagation();
+                    this.childScope.currentPage += page;
+                }
+        
+                this.childScope.totalPages = function () {
+                    return Math.ceil(this.childScope.orderNotes.length / 3);
+                }
+        
+                this.childScope.isUserNote = function (note) {
+                    let emailRegEx = /\S+@\S+\.\S+/;
+                    return emailRegEx.test(note.CreatedBy);
+                }
+        
+                this.childScope.editNote = function (note, edit) {
+                    let ctrl = new Core.Control({
+                        data: { note: note, edit: edit },
+                        controlName: "Order_EditOrderNote",
+                        height: "350px",
+                        width: "450px",
+                        element: event.target,
+                        position: "BOTTOM",
+                        newControl: true
+                    }, this.childScope.options);
+                    
+                    ctrl.onGetEvent = function (event) {
+                        if (event.result) {
+                            if (event.action == "SAVE") {
+                                if (isEmptyOrSpaces(event.result.Note)) {
+                                    Core.Dialogs.addNotify("Note can't be empty!", 'ERROR');
+                                    return;
+                                }
+                                const index = this.childScope.orderNotes.indexOf(note);
+                
+                                if (index == -1) {
+                                    this.childScope.orderNotes.push(event.result);
+                                    this.childScope.saveNotes("created");
+                                } else {
+                                    this.childScope.orderNotes[index] = event.result;
+                                    this.childScope.saveNotes("edited");
+                                }
+                            }
+                        }
+                    };
+                
+                    ctrl.open();
+                }
+        
+                function isEmptyOrSpaces(str){
+                    return str === null || str.match(/^ *$/) !== null;
+                }
+        
+                this.childScope.deleteNote = function ($event, note) {
+                    $event.stopPropagation();
+                    dialogs.question({
+                        title: "Delete Note?",
+                        message: "Deleting this note will remove it from the system completely",
+                        callback:
+                            async (event) => {
+                                if (event.action == "YES") {
+                                    const index = this.childScope.orderNotes.indexOf(note);
+                                    let temp = this.childScope.orderNotes.length;
+                                    this.childScope.orderNotes.splice(index, 1);
+                                    this.childScope.saveNotes("deleted");
+                                    if ((index + 1) === temp && this.childScope.orderNotes.length % 3 == 0 && this.childScope.currentPage > 1) {
+                                        this.childScope.currentPage--;
+                                    }
+                                }
+                            }
+                    }, self.options);
+                }
+        
+                this.childScope.saveNotes = function(actionName){
+                    new Services.OrdersService().setOrderNotes(this.childScope.order.OrderId, this.childScope.orderNotes, function (result) {
+                        if (result.error) {
+                            Core.Dialogs.addNotify(result.error, 'ERROR');
+                        } else {
+                            Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
+                            this.childScope.onUpdate(this.childScope.order.OrderId, this.childScope.orderNotes);
+                        }
+                    })
+                };
+
+                params.context.$compile(this.eGui)(this.childScope);
+            });
+
+            
         }
     };
 
@@ -127,7 +222,7 @@ define(function(require) {
                 templateId: '' 
             });
             
-            
+
             columnDefs = columnDefs.concat([colDef]);
 
             gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
