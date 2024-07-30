@@ -12,12 +12,12 @@ define(function(require) {
         vm.viewOrders = [];
         vm.columnShown = false;
         vm.placeholderKey = "placeholderAddOrderNotesColumnTEST";
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes(TEST)"
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
         vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes(TEST)"
 
         vm.getItems = () => ([{
             key: vm.placeholderKey,
-            text: "Show notes",
+            text: "Show notes(TEST)",
             icon: "fa func fa-comments"
         }]);
 
@@ -57,12 +57,24 @@ define(function(require) {
                 Core.Dialogs.addNotify("No orders found", 'WARNING');
                 return;
             }
+
+            const appName = vm.getAppNameByCustomer();
+
             if (!vm.columnShown) {
                 vm.setLoading(true);
                 let totalPages = Math.ceil(vm.viewOrders.length / 100);
-                vm.loadNotes({}, vm.viewOrders, 1, totalPages, vm.addNotesColumn);
+                vm.loadNotes({}, vm.viewOrders, 1, totalPages, appName, vm.addNotesColumn);
             } else {
                 vm.removeNotesColumn();
+            }
+        };
+
+        vm.getAppNameByCustomer = () => {
+            const session = JSON.parse(window.localStorage.getItem('SPA_auth_session'));
+            if (session && session.email == 'em@feroxon.com') {
+                return 'NotesManagerCustom';
+            } else {
+                return 'NotesManager';
             }
         };
 
@@ -102,10 +114,9 @@ define(function(require) {
             vm.agButton.html(vm.buttonInnerHTML);
         };
 
-        vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, finishCallback) => {
-            let orderIds = paginate(allOrderIds, 250, pageNumber);
-
-            vm.macroService.Run({applicationName: "OpenOrdersNotes_Test", macroName: "GetOrderNotesBulk", orderIds: orderIds}, function(result) {
+        vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, appName, finishCallback) => {
+            const orderIds = paginate(allOrderIds, 250, pageNumber);
+            vm.macroService.Run({applicationName: appName, macroName: "NotesManagerMacro", orderIds: orderIds}, function(result) {
                 if (!result.error) {
                     if (result.result.Error) {
                         Core.Dialogs.addNotify(result.result.Error, 'ERROR');
@@ -236,8 +247,7 @@ define(function(require) {
         const vm = this;
         vm.scope = $scope;
         vm.currentPage = 1;
-        vm.orderNotes = [];
-        vm.order = {};
+        vm.orderNote = [];
 
         vm.itemWatcher = vm.scope.$watch(() => vm.item.OrderId, function(newVal, oldVal){
             vm.$onInit();
@@ -332,7 +342,6 @@ define(function(require) {
         };
     }
 
-    //Open orders notes cell component
     angular.module("openOrdersViewService")
         .component("orderGridNotes", {
             template: orderGridNotesTemplate,
