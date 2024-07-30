@@ -201,7 +201,7 @@ define(function(require) {
                 }
         
                 scopeVm.saveNotes = function(actionName){
-                    new Services.OrdersService().setOrderNotes(scopeVm.order.OrderId, scopeVm.orderNotes, function (result) {
+                    new Services.OrdersService().setOrderNotes(scopeVm.data.OrderId, scopeVm.orderNotes, function (result) {
                         if (result.error) {
                             Core.Dialogs.addNotify(result.error, 'ERROR');
                         } else {
