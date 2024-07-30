@@ -114,8 +114,8 @@ define(function(require) {
             //     type: "string"
             // };
 
-            const existingColumns = gridScope.$ctrl.api.gridOptions.columnDefs;
-            const nextSequence = Math.max(...existingColumns.map(o => o.sequence))
+            let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();;
+            const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
 
             const colDef = new AGGridColumn({ 
                 sequence: nextSequence, 
@@ -127,7 +127,9 @@ define(function(require) {
                 templateId: '' 
             });
             
-            gridScope.$ctrl.api.gridOptions.columnDefs.push(colDef);
+            columnDefs = columnDefs.concat([colDef]);
+
+            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
             vm.columnShown = true;
             vm.setLoading(false);
         };
