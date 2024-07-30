@@ -74,34 +74,34 @@ define(function(require) {
             }
         </style>
         <div style="height: 100%;">
-            <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
-                <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
-                    <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
+            <div ng-if="orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+                <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
+                    <div class="order-note flex-container flex-column" ng-click="editNote(note, true)" ng-class="{ 'user-note': isUserNote(note), 'admin-note': !isUserNote(note) }">
                         <div class="order-note-text">
                             <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
                         </div>
-                        <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
+                        <div ng-click="deleteNote($event, note);" style="cursor: pointer;">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+            <div ng-if="orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
                 <div>No notes found</div>
-                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
             </div>
             <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
-                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
                 <div class="flex-container flex-column">
                     <div style="width: 20px;">
-                        <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                        <div ng-show="currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     </div>
                     <div style="width: 20px;">
-                        <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                        <div ng-show="currentPage < totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                     </div>
                 </div>
             </div>
