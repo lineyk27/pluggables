@@ -114,6 +114,7 @@ define(function(require) {
 
             this.eGui = document.createElement('div');
             this.childScope.$apply(() => {
+                const scopeVm = this.childScope;
                 this.childScope.data = params.data;
                 this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.data.OrderId];
                 this.childScope.currentPage = 1;
@@ -123,11 +124,11 @@ define(function(require) {
 
                 this.childScope.addPage = function ($event, page) {
                     $event.stopPropagation();
-                    this.childScope.currentPage += page;
+                    this.scopeVm.currentPage += page;
                 }
         
                 this.childScope.totalPages = function () {
-                    return Math.ceil(this.childScope.orderNotes.length / 3);
+                    return Math.ceil(this.scopeVm.orderNotes.length / 3);
                 }
         
                 this.childScope.isUserNote = function (note) {
@@ -148,7 +149,7 @@ define(function(require) {
                         element: event.target,
                         position: "BOTTOM",
                         newControl: true
-                    }, this.childScope.options);
+                    }, this.scopeVm.options);
                     
                     ctrl.onGetEvent = function (event) {
                         if (event.result) {
@@ -157,14 +158,14 @@ define(function(require) {
                                     Core.Dialogs.addNotify("Note can't be empty!", 'ERROR');
                                     return;
                                 }
-                                const index = this.childScope.orderNotes.indexOf(note);
+                                const index = this.scopeVm.orderNotes.indexOf(note);
                 
                                 if (index == -1) {
-                                    this.childScope.orderNotes.push(event.result);
-                                    this.childScope.saveNotes("created");
+                                    scopeVm.orderNotes.push(event.result);
+                                    scopeVm.saveNotes("created");
                                 } else {
-                                    this.childScope.orderNotes[index] = event.result;
-                                    this.childScope.saveNotes("edited");
+                                    scopeVm.orderNotes[index] = event.result;
+                                    scopeVm.saveNotes("edited");
                                 }
                                 this.updateEGui();
                             }
@@ -185,12 +186,12 @@ define(function(require) {
                         callback:
                             async (event) => {
                                 if (event.action == "YES") {
-                                    const index = this.childScope.orderNotes.indexOf(note);
-                                    let temp = this.childScope.orderNotes.length;
-                                    this.childScope.orderNotes.splice(index, 1);
-                                    this.childScope.saveNotes("deleted");
-                                    if ((index + 1) === temp && this.childScope.orderNotes.length % 3 == 0 && this.childScope.currentPage > 1) {
-                                        this.childScope.currentPage--;
+                                    const index = scopeVm.orderNotes.indexOf(note);
+                                    let temp = scopeVm.orderNotes.length;
+                                    scopeVm.orderNotes.splice(index, 1);
+                                    scopeVm.saveNotes("deleted");
+                                    if ((index + 1) === temp && scopeVm.orderNotes.length % 3 == 0 && scopeVm.currentPage > 1) {
+                                        scopeVm.currentPage--;
                                     }
                                     this.updateEGui();
                                 }
@@ -198,13 +199,13 @@ define(function(require) {
                     }, self.options);
                 }
         
-                this.childScope.saveNotes = function(actionName){
-                    new Services.OrdersService().setOrderNotes(this.childScope.order.OrderId, this.childScope.orderNotes, function (result) {
+                scopeVm.saveNotes = function(actionName){
+                    new Services.OrdersService().setOrderNotes(scopeVm.order.OrderId, scopeVm.orderNotes, function (result) {
                         if (result.error) {
                             Core.Dialogs.addNotify(result.error, 'ERROR');
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
-                            this.childScope.onUpdate(this.childScope.order.OrderId, this.childScope.orderNotes);
+                            scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
                             this.updateEGui();
                         }
                     })
