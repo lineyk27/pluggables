@@ -72,9 +72,9 @@ define(function(require) {
         vm.getAppNameByCustomer = () => {
             const session = JSON.parse(window.localStorage.getItem('SPA_auth_session'));
             if (session && session.email == 'em@feroxon.com') {
-                return 'NotesManagerCustom';
+                return 'Notes Manager Custom';
             } else {
-                return 'NotesManager';
+                return 'Notes Manager - New Orders Screen';
             }
         };
 
