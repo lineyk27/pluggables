@@ -11,7 +11,7 @@ define(function(require) {
         init(params){
             this.eGui = document.createElement('div');
             this.childScope = params.context.$scope.$new();
-            this.eGui.innerHTML = orderGridNotesTemplate;
+            this.eGui.innerHTML = "<div>Test</div>";
             console.log(params);
         }
     };
