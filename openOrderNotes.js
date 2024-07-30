@@ -11,7 +11,6 @@ define(function(require) {
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
             this.childScope = params.context.$scope.$new();
-            this.eGui.innerHTML = orderGridNotesTemplate;
 
             this.eGui = document.createElement('div');
             this.childScope.$apply(() => {
