@@ -136,6 +136,10 @@ define(function(require) {
                 }
         
                 this.childScope.editNote = function (note, edit) {
+                    console.log("in edit note");
+                    console.log(note);
+                    console.log(edit);
+                    
                     let ctrl = new Core.Control({
                         data: { note: note, edit: edit },
                         controlName: "Order_EditOrderNote",
