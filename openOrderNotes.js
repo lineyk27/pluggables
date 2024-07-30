@@ -101,7 +101,7 @@ define(function(require) {
                         <div ng-show="currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     </div>
                     <div style="width: 20px;">
-                        <div ng-show="currentPage < totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                        <div ng-show="currentPage < 1" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                     </div>
                 </div>
             </div>
