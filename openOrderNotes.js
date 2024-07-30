@@ -308,7 +308,7 @@ define(function(require) {
             //     type: "string"
             // };
 
-            let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();;
+            let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
             const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
 
             const colDef = new AGGridColumn({ 
@@ -331,10 +331,12 @@ define(function(require) {
 
         vm.removeNotesColumn = () => {
             let gridScope = angular.element("view-grid").scope();
-            let colInd = gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
+            let colDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
+            let colInd = colDefs.findIndex(item => item.code === "NOTES");
             if (colInd > -1) {
-                gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
+                colDefs.splice(colInd, 1);
             }
+            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(colDefs);
             vm.columnShown = false;
             vm.agButton.html(vm.buttonInnerHTML);
         };
