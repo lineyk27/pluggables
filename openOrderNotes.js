@@ -79,7 +79,11 @@ define(function(require) {
         };
 
         vm.addNotesColumn = (ordersNotes) => {
-            let gridScope = angular.element("view-grid").scope();
+            let gridScope = angular.element("stacked-view-grid").scope();
+            if (!gridScope) {
+                Core.Dialogs.addNotify("View grid not supported", 'WARNING');
+                return;
+            }
 
             gridScope.$ctrl.__ordersNotes = ordersNotes;
             gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
