@@ -168,6 +168,7 @@ define(function(require) {
                                     scopeVm.saveNotes("edited");
                                 }
                                 this.updateEGui();
+                                ctrl.close();
                             }
                         }
                     };
@@ -537,7 +538,6 @@ define(function(require) {
                             vm.orderNotes[index] = event.result;
                             vm.saveNotes("edited");
                         }
-                        ctrl.close();
                     }
                 }
             };
