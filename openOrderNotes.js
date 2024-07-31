@@ -8,8 +8,7 @@ define(function(require) {
     const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
     const AGGridColumn = require("modules/orderbook/orders/components/stacked-view-grid/ag-grid-column");
 
-    const orderGridNotesTemplate = `
-        <style>
+    const styles = `
             .user-note{
                 background-color: #ffc21c;
             }
@@ -72,7 +71,13 @@ define(function(require) {
                 max-height: 100%;
                 align-items: center;
             }
-        </style>
+    `;
+
+    const styleElem = angular.element('style');
+    styleElem.innerHTML = styles;
+    document.head.appendChild(styleElem);
+
+    const orderGridNotesTemplate = `
         <div style="height: 100%;">
             <div ng-if="orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
                 <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
@@ -138,11 +143,7 @@ define(function(require) {
                 }
                 
                 this.childScope.editNote = function (note, edit) {
-                    console.log("in edit note");
-                    console.log(note);
-                    console.log(edit);
-                    
-                    let ctrl = new Core.Control({
+                    const ctrl = new Core.Control({
                         data: { note: note, edit: edit },
                         controlName: "Order_EditOrderNote",
                         height: "350px",
