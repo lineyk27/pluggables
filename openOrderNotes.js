@@ -116,7 +116,7 @@ define(function(require) {
             this.childScope.$apply(() => {
                 const scopeVm = this.childScope;
                 this.childScope.order = params.data;
-                this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.data.OrderId];
+                this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.order.OrderId];
                 this.childScope.currentPage = 1;
                 this.childScope.orderNotes = [];
 
@@ -201,12 +201,12 @@ define(function(require) {
                 }
         
                 scopeVm.saveNotes = function(actionName){
-                    new Services.OrdersService().setOrderNotes(scopeVm.data.OrderId, scopeVm.orderNotes, function (result) {
+                    new Services.OrdersService().setOrderNotes(scopeVm.order.OrderId, scopeVm.orderNotes, function (result) {
                         if (result.error) {
                             Core.Dialogs.addNotify(result.error, 'ERROR');
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
-                            scopeVm.onUpdate(scopeVm.data.OrderId, scopeVm.orderNotes);
+                            scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
                             this.updateEGui();
                         }
                     })
