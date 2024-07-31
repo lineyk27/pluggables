@@ -66,6 +66,7 @@ define(function(require) {
                 -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 text-overflow: ellipsis;
+                white-space: initial;
             }
             .no-notes-wrapper{
                 min-height: 100%;
