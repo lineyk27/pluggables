@@ -121,7 +121,6 @@ define(function(require) {
                 this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.order.OrderId];
                 this.childScope.onUpdate = params.context.__onUpdateOrderNotes;
                 this.childScope.currentPage = 1;
-                this.childScope.orderNotes = [];
 
                 this.eGui.innerHTML = orderGridNotesTemplate;
 
