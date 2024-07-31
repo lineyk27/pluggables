@@ -144,7 +144,7 @@ define(function(require) {
 
     const setupStyles = function(isOld){
         if (!window.stylesAdded) {
-            const stylesToAdd = isOld ? styles : stylesOld;
+            const stylesToAdd = isOld ? stylesOld : styles;
             const styleElem = document.createElement('style');
             styleElem.innerHTML = stylesToAdd;
             document.head.appendChild(styleElem);
