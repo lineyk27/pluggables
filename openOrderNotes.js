@@ -73,7 +73,7 @@ define(function(require) {
             }
     `;
 
-    const styleElem = angular.element('style');
+    const styleElem = document.createElement('style');
     styleElem.innerHTML = styles;
     document.head.appendChild(styleElem);
 
