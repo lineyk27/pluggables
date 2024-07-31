@@ -84,7 +84,7 @@ define(function(require) {
                 <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="editNote(note, true)" ng-class="{ 'user-note': isUserNote(note), 'admin-note': !isUserNote(note) }">
                         <div class="order-note-text">
-                            <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
+                            <div class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</div>
                         </div>
                         <div ng-click="deleteNote($event, note);" style="cursor: pointer;">
                             <i class="fa fa-times" aria-hidden="true"></i>
