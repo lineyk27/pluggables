@@ -288,17 +288,17 @@ define(function(require) {
 
         vm.addNotesColumn = (ordersNotes) => {
             // let gridScope = angular.element("stacked-view-grid").scope();
-            let gridScope = $scope;
+            let gridScope = angular.element("stacked-view-grid").scope();
             
             if (!gridScope) {
                 Core.Dialogs.addNotify("View grid not supported", 'WARNING');
                 return;
             }
 
-            gridScope.__ordersNotes = ordersNotes;
-            gridScope.__onUpdateOrderNotes = function (orderId, notes) {
+            gridScope.$ctrl.__ordersNotes = ordersNotes;
+            gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
                 this.__ordersNotes[orderId] = notes;
-            }.bind(gridScope);
+            }.bind(gridScope.$ctrl);
             
             // let columnDefinition = {
             //     sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
@@ -313,7 +313,7 @@ define(function(require) {
             //     type: "string"
             // };
 
-            let columnDefs = gridScope.api.gridOptions.api.getColumnDefs();
+            let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
             const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
 
             const colDef = new AGGridColumn({ 
@@ -329,19 +329,19 @@ define(function(require) {
 
             columnDefs = columnDefs.concat([colDef]);
 
-            gridScope.api.gridOptions.api.setColumnDefs(columnDefs);
+            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
             vm.columnShown = true;
             vm.setLoading(false);
         };
 
         vm.removeNotesColumn = () => {
             let gridScope = angular.element("stacked-view-grid").scope();
-            let colDefs = gridScope.api.gridOptions.api.getColumnDefs();
+            let colDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
             let colInd = colDefs.findIndex(item => item.code === "NOTES");
             if (colInd > -1) {
                 colDefs.splice(colInd, 1);
             }
-            gridScope.api.gridOptions.api.setColumnDefs(colDefs);
+            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(colDefs);
             vm.columnShown = false;
             vm.agButton.html(vm.buttonInnerHTML);
         };
