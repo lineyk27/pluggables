@@ -113,6 +113,7 @@ define(function(require) {
             this.childScope = params.context.$scope.$new();
 
             this.eGui = document.createElement('div');
+            angular.element(this.eGui).css('height', '100%');
             this.childScope.$apply(() => {
                 const scopeVm = this.childScope;
                 this.childScope.order = params.data;
