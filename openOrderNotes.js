@@ -169,8 +169,8 @@ define(function(require) {
                                     scopeVm.orderNotes[index] = event.result;
                                     scopeVm.saveNotes("edited");
                                 }
-                                this.updateEGui();
-                                ctrl.close();
+                                // this.updateEGui();
+                                // ctrl.close();
                             }
                         }
                     };
@@ -196,7 +196,7 @@ define(function(require) {
                                     if ((index + 1) === temp && scopeVm.orderNotes.length % 3 == 0 && scopeVm.currentPage > 1) {
                                         scopeVm.currentPage--;
                                     }
-                                    this.updateEGui();
+                                    // this.updateEGui();
                                 }
                             }
                     }, self.options);
@@ -209,7 +209,7 @@ define(function(require) {
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
                             scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
-                            this.updateEGui();
+                            // this.updateEGui();
                         }
                     })
                 };
