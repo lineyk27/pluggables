@@ -347,7 +347,7 @@ define(function(require) {
         };
 
         vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, appName, finishCallback) => {
-            const orderIds = paginate(allOrderIds, 250, pageNumber);
+            const orderIds = paginate(allOrderIds, 100, pageNumber);
             vm.macroService.Run({applicationName: appName, macroName: "NotesManagerMacro", orderIds: orderIds}, function(result) {
                 if (!result.error) {
                     if (result.result.Error) {
