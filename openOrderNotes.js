@@ -8,6 +8,8 @@ define(function(require) {
     const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
     const AGGridColumn = require("modules/orderbook/orders/components/stacked-view-grid/ag-grid-column");
 
+    window.stylesAdded = false;
+
     const styles = `
             .user-note{
                 background-color: #ffc21c;
@@ -75,9 +77,70 @@ define(function(require) {
             }
     `;
 
-    const styleElem = document.createElement('style');
-    styleElem.innerHTML = styles;
-    document.head.appendChild(styleElem);
+    const stylesOld = `
+    .user-note{
+        background-color: #ffc21c;
+    }
+    .admin-note{
+        background-color: #fffb1c;
+    }
+    .notes-wrapper{
+        display: block;
+        overflow: hidden;
+    }
+    .flex-container{
+        display: flex;
+    }
+    .flex-column{
+        flex-direction: row;
+    }
+    .flex-row{
+        flex-direction: column;
+    }
+    .justify-center{
+        justify-content: center;
+    }
+    .note-footer{
+        width: 100%; 
+        height: 20%;
+        justify-content: space-between;
+    }
+    .page-button{
+        cursor: pointer;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+    .order-note-wrapper{
+        width: 10rem;
+    }
+    .order-note{
+        height: 90%;
+        min-height: 90%; 
+        max-height: 90%;
+        margin: 5px;
+        border-radius: 5px;
+        justify-content: space-around;
+    }
+    .order-note-text{
+        max-width: 85%;
+        min-width: 85%;
+        width: 85%;
+    }
+    .order-note-text-wrap{
+        margin: 2px;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+    .no-notes-wrapper{
+        min-height: 100%;
+        max-height: 100%;
+        align-items: center;
+    }
+    `;
 
     const orderGridNotesTemplate = `
         <div style="height: 100%;">
@@ -113,7 +176,7 @@ define(function(require) {
                 </div>
             </div>
         </div>
-        `;
+    `;
 
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
@@ -216,6 +279,16 @@ define(function(require) {
             });
         }
     };
+    
+    const setupStyles = function(isOld){
+        if (!window.stylesAdded) {
+            const stylesToAdd = isOld ? styles : stylesOld;
+            const styleElem = document.createElement('style');
+            styleElem.innerHTML = stylesToAdd;
+            document.head.appendChild(styleElem);
+            window.stylesAdded = true;
+        }
+    }
 
     const placeHolder = function ($scope) {
         const vm = this;
@@ -293,6 +366,7 @@ define(function(require) {
             let gridScope = angular.element("stacked-view-grid").scope();
 
             if (gridScope) {
+                setupStyles(false);
                 gridScope.$ctrl.__ordersNotes = ordersNotes;
                 gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
                     this.__ordersNotes[orderId] = notes;
@@ -324,6 +398,7 @@ define(function(require) {
                     vm.setLoading(false);
                     return;
                 }
+                setupStyles(true);
 
                 gridScope.$ctrl.__ordersNotes = ordersNotes;
                 gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
@@ -388,73 +463,10 @@ define(function(require) {
             return array.slice((page_number - 1) * page_size, page_number * page_size);
         };
     };
+
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
-    const orderGridNotes1Template = `
-    <style>
-        .user-note{
-            background-color: #ffc21c;
-        }
-        .admin-note{
-            background-color: #fffb1c;
-        }
-        .notes-wrapper{
-            display: block;
-            overflow: hidden;
-        }
-        .flex-container{
-            display: flex;
-        }
-        .flex-column{
-            flex-direction: row;
-        }
-        .flex-row{
-            flex-direction: column;
-        }
-        .justify-center{
-            justify-content: center;
-        }
-        .note-footer{
-            width: 100%; 
-            height: 20%;
-            justify-content: space-between;
-        }
-        .page-button{
-            cursor: pointer;
-            margin-right: 5px;
-            margin-left: 5px;
-        }
-        .order-note-wrapper{
-            width: 10rem;
-        }
-        .order-note{
-            height: 90%;
-            min-height: 90%; 
-            max-height: 90%;
-            margin: 5px;
-            border-radius: 5px;
-            justify-content: space-around;
-        }
-        .order-note-text{
-            max-width: 85%;
-            min-width: 85%;
-            width: 85%;
-        }
-        .order-note-text-wrap{
-            margin: 2px;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-        .no-notes-wrapper{
-            min-height: 100%;
-            max-height: 100%;
-            align-items: center;
-        }
-    </style>
+    const orderGridNotesTemplateOld = `
     <div style="height: 100%;">
         <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
             <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
@@ -489,7 +501,6 @@ define(function(require) {
         </div>
     </div>
     `;
-
 
     function OrderGridNotesCtrl ($scope){
         const vm = this;
@@ -592,7 +603,7 @@ define(function(require) {
 
     angular.module("openOrdersViewService")
         .component("orderGridNotes", {
-            template: orderGridNotesTemplate,
+            template: orderGridNotesTemplateOld,
             controllerAs: "vm",
             bindings: {
                 item: "=",
