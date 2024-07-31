@@ -289,51 +289,63 @@ define(function(require) {
         };
 
         vm.addNotesColumn = (ordersNotes) => {
-            // let gridScope = angular.element("stacked-view-grid").scope();
             let gridScope = angular.element("stacked-view-grid").scope();
-            
-            if (!gridScope) {
-                Core.Dialogs.addNotify("View grid not supported", 'WARNING');
-                return;
+
+            if (gridScope) {
+                gridScope.$ctrl.__ordersNotes = ordersNotes;
+                gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
+                    this.__ordersNotes[orderId] = notes;
+                }.bind(gridScope.$ctrl);
+
+                let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
+                const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
+    
+                const columnDefinition = new AGGridColumn({ 
+                    sequence: nextSequence, 
+                    code: 'NOTES', 
+                    pinned: null, 
+                    name: 'Notes', 
+                    suppressMenu: true, 
+                    cellRenderer: cellRenderer, 
+                    templateId: '' 
+                });
+                
+                columnDefs = columnDefs.concat([columnDefinition]);
+    
+                gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
+                vm.columnShown = true;
+                vm.setLoading(false);
+            } else {
+                gridScope = angular.element("view-grid").scope();
+
+                if (!gridScope) {
+                    Core.Dialogs.addNotify("Cant find view grid scope", 'WARNING');
+                    vm.setLoading(false);
+                    return;
+                }
+
+                gridScope.$ctrl.__ordersNotes = ordersNotes;
+                gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
+                    this.__ordersNotes[orderId] = notes;
+                }.bind(gridScope.$ctrl);
+
+                const columnDefinition = {
+                    sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
+                    code: "NOTES",
+                    name: "Notes",
+                    displayName: "Notes",
+                    referencedName: "Notes",
+                    cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
+                    width: 500,
+                    enableColumnMoving: true,
+                    enableColumnResizing: true,
+                    type: "string"
+                };
+
+                gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
+                vm.columnShown = true;
+                vm.setLoading(false);
             }
-
-            gridScope.$ctrl.__ordersNotes = ordersNotes;
-            gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
-                this.__ordersNotes[orderId] = notes;
-            }.bind(gridScope.$ctrl);
-            
-            // let columnDefinition = {
-            //     sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
-            //     code: "NOTES",
-            //     name: "Notes",
-            //     displayName: "Notes",
-            //     referencedName: "Notes",
-            //     cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
-            //     width: 500,
-            //     enableColumnMoving: true,
-            //     enableColumnResizing: true,
-            //     type: "string"
-            // };
-
-            let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
-            const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
-
-            const colDef = new AGGridColumn({ 
-                sequence: nextSequence, 
-                code: 'NOTES', 
-                pinned: null, 
-                name: 'Notes', 
-                suppressMenu: true, 
-                cellRenderer: cellRenderer, 
-                templateId: '' 
-            });
-            
-
-            columnDefs = columnDefs.concat([colDef]);
-
-            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
-            vm.columnShown = true;
-            vm.setLoading(false);
         };
 
         vm.removeNotesColumn = () => {
@@ -358,7 +370,7 @@ define(function(require) {
                     };
 
                     ordersNotes = Object.assign({}, ordersNotes, result.result.OrdersNotes);
-
+                    
                     if (pageNumber == totalPages) {
                         finishCallback && finishCallback(ordersNotes);
                     } else {
@@ -378,104 +390,104 @@ define(function(require) {
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
 
     const orderGridNotes1Template = `
-        <style>
-            .user-note{
-                background-color: #ffc21c;
-            }
-            .admin-note{
-                background-color: #fffb1c;
-            }
-            .notes-wrapper{
-                display: block;
-                overflow: hidden;
-            }
-            .flex-container{
-                display: flex;
-            }
-            .flex-column{
-                flex-direction: row;
-            }
-            .flex-row{
-                flex-direction: column;
-            }
-            .justify-center{
-                justify-content: center;
-            }
-            .note-footer{
-                width: 100%; 
-                height: 20%;
-                justify-content: space-between;
-            }
-            .page-button{
-                cursor: pointer;
-                margin-right: 5px;
-                margin-left: 5px;
-            }
-            .order-note-wrapper{
-                width: 10rem;
-            }
-            .order-note{
-                height: 90%;
-                min-height: 90%; 
-                max-height: 90%;
-                margin: 5px;
-                border-radius: 5px;
-                justify-content: space-around;
-            }
-            .order-note-text{
-                max-width: 85%;
-                min-width: 85%;
-                width: 85%;
-            }
-            .order-note-text-wrap{
-                margin: 2px;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-            }
-            .no-notes-wrapper{
-                min-height: 100%;
-                max-height: 100%;
-                align-items: center;
-            }
-        </style>
-        <div style="height: 100%;">
-            <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
-                <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
-                    <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
-                        <div class="order-note-text">
-                            <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
-                        </div>
-                        <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </div>
+    <style>
+        .user-note{
+            background-color: #ffc21c;
+        }
+        .admin-note{
+            background-color: #fffb1c;
+        }
+        .notes-wrapper{
+            display: block;
+            overflow: hidden;
+        }
+        .flex-container{
+            display: flex;
+        }
+        .flex-column{
+            flex-direction: row;
+        }
+        .flex-row{
+            flex-direction: column;
+        }
+        .justify-center{
+            justify-content: center;
+        }
+        .note-footer{
+            width: 100%; 
+            height: 20%;
+            justify-content: space-between;
+        }
+        .page-button{
+            cursor: pointer;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+        .order-note-wrapper{
+            width: 10rem;
+        }
+        .order-note{
+            height: 90%;
+            min-height: 90%; 
+            max-height: 90%;
+            margin: 5px;
+            border-radius: 5px;
+            justify-content: space-around;
+        }
+        .order-note-text{
+            max-width: 85%;
+            min-width: 85%;
+            width: 85%;
+        }
+        .order-note-text-wrap{
+            margin: 2px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .no-notes-wrapper{
+            min-height: 100%;
+            max-height: 100%;
+            align-items: center;
+        }
+    </style>
+    <div style="height: 100%;">
+        <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+            <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
+                <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
+                    <div class="order-note-text">
+                        <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
                     </div>
-                </div>
-            </div>
-            <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
-                <div>No notes found</div>
-                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                    Add note
-                </button>
-            </div>
-            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
-                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                    Add note
-                </button>
-                <div class="flex-container flex-column">
-                    <div style="width: 20px;">
-                        <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                    </div>
-                    <div style="width: 20px;">
-                        <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
+                        <i class="fa fa-times" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
         </div>
-        `;
+        <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+            <div>No notes found</div>
+            <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                Add note
+            </button>
+        </div>
+        <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+            <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                Add note
+            </button>
+            <div class="flex-container flex-column">
+                <div style="width: 20px;">
+                    <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                </div>
+                <div style="width: 20px;">
+                    <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
 
 
     function OrderGridNotesCtrl ($scope){
