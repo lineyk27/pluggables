@@ -86,13 +86,7 @@ define(function(require) {
                     </div>
                 </div>
             </div>
-            <div ng-if="orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
-                <div>No notes found</div>
-                <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                    Add note
-                </button>
-            </div>
-            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+            <div ng-if="orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
@@ -104,6 +98,12 @@ define(function(require) {
                         <div ng-show="currentPage < totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                     </div>
                 </div>
+            </div>
+            <div ng-if="orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+                <div>No notes found</div>
+                <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
             </div>
         </div>
         `;
@@ -465,7 +465,7 @@ define(function(require) {
                     Add note
                 </button>
             </div>
-            <div ng-if="vm.orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
