@@ -44,7 +44,8 @@ define(function(require) {
         margin-left: 5px;
     }
     .order-note-wrapper{
-        width: 10rem;
+        min-width: 5rem;
+        max-width: 10rem;
     }
     .order-note{
         height: 90%;
