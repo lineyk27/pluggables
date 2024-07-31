@@ -465,7 +465,7 @@ define(function(require) {
                     Add note
                 </button>
             </div>
-            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+            <div ng-if="vm.orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
