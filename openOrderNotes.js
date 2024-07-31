@@ -168,8 +168,6 @@ define(function(require) {
                                     scopeVm.orderNotes[index] = event.result;
                                     scopeVm.saveNotes("edited");
                                 }
-                                // this.updateEGui();
-                                // ctrl.close();
                             }
                         }
                     };
@@ -195,7 +193,6 @@ define(function(require) {
                                     if ((index + 1) === temp && scopeVm.orderNotes.length % 3 == 0 && scopeVm.currentPage > 1) {
                                         scopeVm.currentPage--;
                                     }
-                                    // this.updateEGui();
                                 }
                             }
                     }, self.options);
@@ -208,7 +205,6 @@ define(function(require) {
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
                             scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
-                            // this.updateEGui();
                         }
                     })
                 };
@@ -216,11 +212,6 @@ define(function(require) {
                 params.context.$compile(this.eGui)(this.childScope);
             });
         }
-
-        updateEGui(){
-            params.context.$compile(this.eGui)(this.childScope);
-        }
-
     };
 
     const placeHolder = function ($scope) {
@@ -367,7 +358,7 @@ define(function(require) {
                     if (pageNumber == totalPages) {
                         finishCallback && finishCallback(ordersNotes);
                     } else {
-                        vm.loadNotes(ordersNotes, allOrderIds, pageNumber + 1, totalPages, finishCallback);
+                        vm.loadNotes(ordersNotes, allOrderIds, pageNumber + 1, totalPages, appName, finishCallback);
                     }
                 } else {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
