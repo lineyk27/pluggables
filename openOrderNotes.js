@@ -74,6 +74,7 @@ define(function(require) {
             }
         </style>
         <div style="height: 100%;">
+            <div>{{orderNotes}}</div>
             <div ng-if="orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
                 <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="editNote(note, true)" ng-class="{ 'user-note': isUserNote(note), 'admin-note': !isUserNote(note) }">
@@ -92,8 +93,6 @@ define(function(require) {
                     Add note
                 </button>
             </div>
-            <div>{{orderNotes.length}}</div>
-            <div>{{orderNotes}}</div>
             <div ng-if="orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
