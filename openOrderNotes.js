@@ -92,6 +92,8 @@ define(function(require) {
                     Add note
                 </button>
             </div>
+            <div>{{orderNotes.length}}</div>
+            <div>{{orderNotes}}</div>
             <div ng-if="orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
