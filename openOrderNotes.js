@@ -343,7 +343,9 @@ define(function(require) {
                 return;
             }
 
-            const appName = vm.getAppNameByCustomer(['em@feroxon.com']);
+            const privateCustomers = ['em@feroxon.com'];
+
+            const appName = vm.getAppNameByCustomer(privateCustomers);
 
             if (!vm.columnShown) {
                 vm.setLoading(true);
