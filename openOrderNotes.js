@@ -115,10 +115,10 @@ define(function(require) {
             this.eGui = document.createElement('div');
             this.childScope.$apply(() => {
                 const scopeVm = this.childScope;
-                this.childScope.data = params.data;
+                this.childScope.order = params.data;
                 this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.data.OrderId];
                 this.childScope.currentPage = 1;
-                this.childScope.orderNote = [];
+                this.childScope.orderNotes = [];
 
                 this.eGui.innerHTML = orderGridNotesTemplate;
 
@@ -126,16 +126,16 @@ define(function(require) {
                     $event.stopPropagation();
                     scopeVm.currentPage += page;
                 }
-        
+                
                 this.childScope.totalPages = function () {
                     return Math.ceil(scopeVm.orderNotes.length / 3);
                 }
-        
+                
                 this.childScope.isUserNote = function (note) {
                     let emailRegEx = /\S+@\S+\.\S+/;
                     return emailRegEx.test(note.CreatedBy);
                 }
-        
+                
                 this.childScope.editNote = function (note, edit) {
                     console.log("in edit note");
                     console.log(note);
@@ -188,7 +188,7 @@ define(function(require) {
                             async (event) => {
                                 if (event.action == "YES") {
                                     const index = scopeVm.orderNotes.indexOf(note);
-                                    let temp = scopeVm.orderNotes.length;
+                                    const temp = scopeVm.orderNotes.length;
                                     scopeVm.orderNotes.splice(index, 1);
                                     scopeVm.saveNotes("deleted");
                                     if ((index + 1) === temp && scopeVm.orderNotes.length % 3 == 0 && scopeVm.currentPage > 1) {
@@ -206,7 +206,7 @@ define(function(require) {
                             Core.Dialogs.addNotify(result.error, 'ERROR');
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
-                            scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
+                            scopeVm.onUpdate(scopeVm.data.OrderId, scopeVm.orderNotes);
                             this.updateEGui();
                         }
                     })
@@ -259,8 +259,8 @@ define(function(require) {
 
         vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders.map(i => i.OrderId), function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
-
             let newIds = newVal.map(i => i.OrderId);
+            
             if (newIds.toString() !== oldIds.toString()) {
                 vm.columnShown = false;
                 vm.agButton.html(vm.buttonInnerHTML);
