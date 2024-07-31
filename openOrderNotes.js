@@ -86,7 +86,7 @@ define(function(require) {
                     </div>
                 </div>
             </div>
-            <div class="flex-container flex-row justify-center no-notes-wrapper">                
+            <div ng-if="orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
                 <div>No notes found</div>
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
