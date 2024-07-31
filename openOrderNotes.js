@@ -74,7 +74,6 @@ define(function(require) {
             }
         </style>
         <div style="height: 100%;">
-            <div>{{orderNotes}}</div>
             <div ng-if="orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
                 <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="editNote(note, true)" ng-class="{ 'user-note': isUserNote(note), 'admin-note': !isUserNote(note) }">
