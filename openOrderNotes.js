@@ -7,7 +7,6 @@ define(function(require) {
     const dialogs = require('core/dialogs');
     const BaseCellRenderer = require("modules/orderbook/orders/components/stacked-view-grid/base/base-cell-renderer");
     const AGGridColumn = require("modules/orderbook/orders/components/stacked-view-grid/ag-grid-column");
-//                width: 10rem;
 
     const styles = `
             .user-note{
@@ -43,6 +42,7 @@ define(function(require) {
                 margin-left: 5px;
             }
             .order-note-wrapper{
+                width: 10rem;
             }
             .order-note{
                 height: 90%;
