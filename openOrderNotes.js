@@ -11,137 +11,137 @@ define(function(require) {
     window.stylesAdded = false;
 
     const styles = `
-    .user-note{
-        background-color: #ffc21c;
-    }
-    .admin-note{
-        background-color: #fffb1c;
-    }
-    .notes-wrapper{
-        display: block;
-        overflow: hidden;
-    }
-    .flex-container{
-        display: flex;
-    }
-    .flex-column{
-        flex-direction: row;
-    }
-    .flex-row{
-        flex-direction: column;
-    }
-    .justify-center{
-        justify-content: center;
-    }
-    .note-footer{
-        width: 100%; 
-        height: 20%;
-        justify-content: space-between;
-    }
-    .page-button{
-        cursor: pointer;
-        margin-right: 5px;
-        margin-left: 5px;
-    }
-    .order-note-wrapper{
-        min-width: 5rem;
-        max-width: 10rem;
-        width: 10rem;
-    }
-    .order-note{
-        height: 90%;
-        min-height: 90%; 
-        max-height: 90%;
-        margin: 5px;
-        border-radius: 5px;
-        justify-content: space-around;
-    }
-    .order-note-text{
-        max-width: 85%;
-        min-width: 85%;
-        width: 85%;
-    }
-    .order-note-text-wrap{
-        margin: 2px;
-        width: 100%;
-        height: 80%;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
-        white-space: initial;
-    }
-    .no-notes-wrapper{
-        min-height: 100%;
-        max-height: 100%;
-        align-items: center;
-    }
-    `;
+        .user-note{
+            background-color: #ffc21c;
+        }
+        .admin-note{
+            background-color: #fffb1c;
+        }
+        .notes-wrapper{
+            display: block;
+            overflow: hidden;
+        }
+        .flex-container{
+            display: flex;
+        }
+        .flex-column{
+            flex-direction: row;
+        }
+        .flex-row{
+            flex-direction: column;
+        }
+        .justify-center{
+            justify-content: center;
+        }
+        .note-footer{
+            width: 100%; 
+            height: 20%;
+            justify-content: space-between;
+        }
+        .page-button{
+            cursor: pointer;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+        .order-note-wrapper{
+            min-width: 5rem;
+            max-width: 10rem;
+            width: 10rem;
+        }
+        .order-note{
+            height: 90%;
+            min-height: 90%; 
+            max-height: 90%;
+            margin: 5px;
+            border-radius: 5px;
+            justify-content: space-around;
+        }
+        .order-note-text{
+            max-width: 85%;
+            min-width: 85%;
+            width: 85%;
+        }
+        .order-note-text-wrap{
+            margin: 2px;
+            width: 100%;
+            height: 80%;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            white-space: initial;
+        }
+        .no-notes-wrapper{
+            min-height: 100%;
+            max-height: 100%;
+            align-items: center;
+        }
+        `;
 
     const stylesOld = `
-    .user-note{
-        background-color: #ffc21c;
-    }
-    .admin-note{
-        background-color: #fffb1c;
-    }
-    .notes-wrapper{
-        display: block;
-        overflow: hidden;
-    }
-    .flex-container{
-        display: flex;
-    }
-    .flex-column{
-        flex-direction: row;
-    }
-    .flex-row{
-        flex-direction: column;
-    }
-    .justify-center{
-        justify-content: center;
-    }
-    .note-footer{
-        width: 100%; 
-        height: 20%;
-        justify-content: space-between;
-    }
-    .page-button{
-        cursor: pointer;
-        margin-right: 5px;
-        margin-left: 5px;
-    }
-    .order-note-wrapper{
-        width: 10rem;
-    }
-    .order-note{
-        height: 90%;
-        min-height: 90%; 
-        max-height: 90%;
-        margin: 5px;
-        border-radius: 5px;
-        justify-content: space-around;
-    }
-    .order-note-text{
-        max-width: 85%;
-        min-width: 85%;
-        width: 85%;
-    }
-    .order-note-text-wrap{
-        margin: 2px;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-    .no-notes-wrapper{
-        min-height: 100%;
-        max-height: 100%;
-        align-items: center;
-    }
+        .user-note{
+            background-color: #ffc21c;
+        }
+        .admin-note{
+            background-color: #fffb1c;
+        }
+        .notes-wrapper{
+            display: block;
+            overflow: hidden;
+        }
+        .flex-container{
+            display: flex;
+        }
+        .flex-column{
+            flex-direction: row;
+        }
+        .flex-row{
+            flex-direction: column;
+        }
+        .justify-center{
+            justify-content: center;
+        }
+        .note-footer{
+            width: 100%; 
+            height: 20%;
+            justify-content: space-between;
+        }
+        .page-button{
+            cursor: pointer;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+        .order-note-wrapper{
+            width: 10rem;
+        }
+        .order-note{
+            height: 90%;
+            min-height: 90%; 
+            max-height: 90%;
+            margin: 5px;
+            border-radius: 5px;
+            justify-content: space-around;
+        }
+        .order-note-text{
+            max-width: 85%;
+            min-width: 85%;
+            width: 85%;
+        }
+        .order-note-text-wrap{
+            margin: 2px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .no-notes-wrapper{
+            min-height: 100%;
+            max-height: 100%;
+            align-items: center;
+        }
     `;
 
     const setupStyles = function(isOld){
