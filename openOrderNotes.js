@@ -297,13 +297,13 @@ define(function(require) {
         vm.macroService = new Services.MacroService(vm);
         vm.viewOrders = [];
         vm.columnShown = false;
-        vm.placeholderKey = "placeholderAddOrderNotesColumnTEST";
+        vm.placeholderKey = "placeholderAddOrderNotesColumn";
         vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
-        vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes(TEST)"
+        vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes"
 
         vm.getItems = () => ([{
             key: vm.placeholderKey,
-            text: "Show notes(TEST)",
+            text: "Show notes",
             icon: "fa func fa-comments"
         }]);
 
