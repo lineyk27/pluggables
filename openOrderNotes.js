@@ -344,7 +344,7 @@ define(function(require) {
                 return;
             }
 
-            const privateCustomers = ['akornytskyi@brainence.com'];
+            const privateCustomers = ['em@feroxon.com'];
 
             const appName = vm.getAppNameByCustomer(privateCustomers);
 
