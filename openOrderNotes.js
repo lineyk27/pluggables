@@ -367,7 +367,7 @@ define(function(require) {
         };
 
         vm.addNotesColumn = (ordersNotes) => {
-            let gridScope = angular.element("stacked-view-grid").scope();
+            let gridScope = angular.element("stacked-view-grid") && angular.element("stacked-view-grid").scope();
 
             if (gridScope) {
                 setupStyles(false);
@@ -395,7 +395,8 @@ define(function(require) {
                 vm.columnShown = true;
                 vm.setLoading(false);
             } else {
-                gridScope = angular.element("view-grid").scope();
+                // gridScope = angular.element("view-grid").scope();
+                gridScope = angular.element("view-grid") && angular.element("view-grid").scope();
 
                 if (!gridScope) {
                     Core.Dialogs.addNotify("Cant find view grid scope", 'WARNING');
