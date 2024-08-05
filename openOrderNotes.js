@@ -335,12 +335,10 @@ define(function(require) {
                 vm.columnShown = false;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
-            setTimeout(() => {
-                if(vm.preloadNotes && !!newIds && newIds.length > 0){
-                    console.log("Loaded " + newIds.length + " orders");
-                    vm.onClick('', null);    
-                }
-            }, 500);
+            if(vm.preloadNotes && !!newIds && newIds.length > 0){
+                console.log("Loaded " + newIds.length + " orders");
+                vm.onClick('', null);    
+            }
         }, true);
 
         vm.onClick = (itemKey, $event) => {
