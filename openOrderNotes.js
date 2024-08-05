@@ -328,7 +328,7 @@ define(function(require) {
             return true;
         };
 
-        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders.map(i => i.OrderId), function(newVal, oldVal){
+        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats?.orders?.map(i => i.OrderId), function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
             let newIds = newVal.map(i => i.OrderId);
             if (newIds.toString() !== oldIds.toString()) {
@@ -337,7 +337,7 @@ define(function(require) {
             }
             if(vm.preloadNotes && !!newIds && newIds.length > 0){
                 console.log("Loaded " + newIds.length + " orders");
-                vm.onClick('', null);    
+                vm.onClick('', null);
             }
         }, true);
 
