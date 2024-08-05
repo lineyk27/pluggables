@@ -336,8 +336,10 @@ define(function(require) {
                 vm.agButton.html(vm.buttonInnerHTML);
             }
             if(vm.preloadNotes && !!newIds && newIds.length > 0){
-                console.log("Loaded " + newIds.length + " orders");
-                vm.onClick('', null);
+                setTimeout(() => {
+                    console.log("Loaded " + newIds.length + " orders");
+                    vm.onClick('', null);    
+                }, 500);
             }
         }, true);
 
