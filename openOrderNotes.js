@@ -300,6 +300,7 @@ define(function(require) {
         vm.placeholderKey = "placeholderAddOrderNotesColumnTEST";
         vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
         vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes"
+        vm.preloadNotes = true;
 
         vm.getItems = () => ([{
             key: vm.placeholderKey,
@@ -330,12 +331,13 @@ define(function(require) {
         vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats.orders.map(i => i.OrderId), function(newVal, oldVal){
             let oldIds = oldVal.map(i => i.OrderId);
             let newIds = newVal.map(i => i.OrderId);
-            if(!!newIds && newIds.length > 0){
-                console.log("Loaded " + newIds.length + " orders");
-            }
             if (newIds.toString() !== oldIds.toString()) {
                 vm.columnShown = false;
                 vm.agButton.html(vm.buttonInnerHTML);
+            }
+            if(vm.preloadNotes && !!newIds && newIds.length > 0){
+                console.log("Loaded " + newIds.length + " orders");
+                vm.onClick('', null);
             }
         }, true);
 
