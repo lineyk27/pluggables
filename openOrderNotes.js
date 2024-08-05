@@ -329,13 +329,13 @@ define(function(require) {
         };
 
         vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats?.orders?.map(i => i.OrderId), function(newVal, oldVal){
-            let oldIds = oldVal.map(i => i.OrderId);
-            let newIds = newVal.map(i => i.OrderId);
-            if (newIds.toString() !== oldIds.toString()) {
-                vm.columnShown = false;
-                vm.agButton.html(vm.buttonInnerHTML);
-            }
-            if(vm.preloadNotes && !!newIds && newIds.length > 0){
+            // let oldIds = oldVal.map(i => i.OrderId);
+            // let newIds = newVal.map(i => i.OrderId);
+            // if (newIds.toString() !== oldIds.toString()) {
+            //     vm.columnShown = false;
+            //     vm.agButton.html(vm.buttonInnerHTML);
+            // }
+            if(vm.preloadNotes && !!newIds && newIds.length == $scope.viewStats?.TotalOrders){
                 console.log("Loaded " + newIds.length + " orders");
                 vm.onClick('', null);
             }
