@@ -27,7 +27,7 @@ const modalContent = `
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
 
-    const placeHolder = function ($scope, $element, $compile) {
+    const placeHolder = function ($scope, $element, $compile, appsettingsService) {
         const vm = this;
         vm.scope = $scope;
         vm.printService = new Services.PrintService(vm);
@@ -54,12 +54,16 @@ define(function(require) {
             console.log("Close with confirm ", confirm)
         }
 
-        vm.onClick = (itemKey, $event) => {
+        vm.onClick = async (itemKey, $event) => {
             console.log("Scan orders click!");
             const modalElement = $compile(modalContent)(vm.scope);
             vm.element.append(modalElement);
             vm.modalElement = angular.element("#favDialog")[0];
             vm.modalElement.showModal();
+            console.log(appsettingsService);
+            console.log(await appsettingsService.getKey("testKey", false));
+
+            appsettingsService.setKey({ Key: "testKey", IsUserSpecific: false, Value: "testValue" });
         }
     };
     
