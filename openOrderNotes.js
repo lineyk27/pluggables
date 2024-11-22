@@ -335,7 +335,7 @@ define(function(require) {
             //     vm.columnShown = false;
             //     vm.agButton.html(vm.buttonInnerHTML);
             // }
-            if(vm.preloadNotes && !!newIds && newIds.length == $scope.viewStats?.TotalOrders){
+            if (vm.preloadNotes && !!newIds && newIds.length == $scope.viewStats?.TotalOrders) {
                 console.log("Loaded " + newIds.length + " orders");
                 vm.onClick('', null);
             }

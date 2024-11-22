@@ -3,16 +3,16 @@
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     const pdfLib = require("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.js");
-    
+
     const placeHolder = function ($scope) {
         const vm = this;
         vm.printService = new Services.PrintService(vm);
         vm.macroService = new Services.MacroService(vm);
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Set despatch date"
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Štampanje dokumenata"
 
         vm.getItems = () => ([{
             key: "placeholderPrintShippingDocumentsQR",
-            text: "Štampanje dokumenata(TEST)",
+            text: "Štampanje dokumenata",
             icon: "fa func fa-print"
         }]);
 
@@ -22,8 +22,7 @@ define(function(require) {
             if (isLoading) {
                 vm.isEnabled = (itemKey) => false;
                 vm.agButton.html(vm.loadingHtml);
-            }
-            else{
+            } else {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
@@ -72,7 +71,7 @@ define(function(require) {
                     if (pageNumber == totalPages) {
                         vm.printFiles(documents);
                     } else {
-                        vm.loadFilesAndPrint(documents, allOrderIds, pageNumber+1, totalPages, macroService);
+                        vm.loadFilesAndPrint(documents, allOrderIds, pageNumber+1, totalPages);
                     }
                 } else {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
@@ -141,7 +140,21 @@ define(function(require) {
                 .then(docBase64 => {
                     const blob = b64toBlob(docBase64, 'application/pdf');
                     const blobURL = URL.createObjectURL(blob);
-                    vm.printService.OpenPrintDialog(blobURL);
+                    //vm.printService.OpenPrintDialog(blobURL);
+
+                    let iframe = document.createElement("iframe");
+                    document.body.appendChild(iframe);
+                    
+                    iframe.style.display = "none";
+                    iframe.src = blobURL;
+                    iframe.onload = function () {
+                        iframe.focus();
+                        if (iframe.contentWindow) {
+                            iframe.contentWindow.print();
+                        } else {
+                            Core.Dialogs.addNotify("Content window is null", 'ERROR'); 
+                        }
+                    };
                     vm.setLoading(false);
                 })
                 .catch(error => {
@@ -159,7 +172,7 @@ define(function(require) {
             contentType = contentType || '';
             const sliceSize = 512;
             const byteCharacters = window.atob(content);
-        
+
             const byteArrays = [];
             for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
                 const slice = byteCharacters.slice(offset, offset + sliceSize);
