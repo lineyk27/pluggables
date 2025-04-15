@@ -55,7 +55,7 @@ define(function(require) {
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
             let orderIds = paginate(allOrderIds, 4, pageNumber);
-            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
+            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_DEV", macroName: "2544_GenerateDHLGermanyDocTEST", orderIds}, async function (result) {
                 if (!result.error) {
                     if (result.result.IsError) {
                         Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
