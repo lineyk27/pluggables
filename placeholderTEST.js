@@ -22,28 +22,28 @@ define(function(require) {
           
         };
 
-        function getRandomInt(min, max) {
-          min = Math.ceil(min);
-          max = Math.floor(max);
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
+        // function getRandomInt(min, max) {
+        //   min = Math.ceil(min);
+        //   max = Math.floor(max);
+        //   return Math.floor(Math.random() * (max - min + 1)) + min;
+        // };
 
-        angular.element(document).ready(function () {
-          vm.viewChanged = $scope.$watch(() => $scope.viewStats.viewConfiguration.ViewId, function(newVal, oldVal){
-            if(oldVal === newVal){
-              return;
-            }
-              const count = getRandomInt(1, 5);
-              vm.buttons = [];
-              for(let i = 0; i < count; i++){
-                vm.buttons.push({
-                  name: "btn_" + i,
-                  key: "someBtn" + i,
-                  text: "button " + i
-                });
-              }
-          }, true);
-        });
+        // angular.element(document).ready(function () {
+        //   vm.viewChanged = $scope.$watch(() => $scope.viewStats.viewConfiguration.ViewId, function(newVal, oldVal){
+        //     if(oldVal === newVal){
+        //       return;
+        //     }
+        //       const count = getRandomInt(1, 5);
+        //       vm.buttons = [];
+        //       for(let i = 0; i < count; i++){
+        //         vm.buttons.push({
+        //           name: "btn_" + i,
+        //           key: "someBtn" + i,
+        //           text: "button " + i
+        //         });
+        //       }
+        //   }, true);
+        // });
     };
 
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
