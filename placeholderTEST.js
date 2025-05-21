@@ -4,7 +4,7 @@ define(function(require) {
   const placeholderManager = require("core/placeholderManager");
   const orderService = new Services.OrderService();
 
-  const placeholder = function ($scope) {
+  const placeholder = function ($scope, $element) {
     const vm = this;
     vm.scope = $scope;
     vm.buttons = [{
