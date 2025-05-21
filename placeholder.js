@@ -32,7 +32,6 @@ define(function(require) {
             vm.button = document.querySelectorAll("button[key='placeholderPrintShippingDocumentsQR']")[0];
             vm.agButton = angular.element(vm.button);
             vm.buttonInnerHTML = vm.button.innerHTML;
-            console.log(vm.buttonInnerHTML);
         });
 
         vm.onClick = (itemKey, $event) => {
@@ -43,7 +42,9 @@ define(function(require) {
                 "Racun - HR": { x: 417, y: 420, width: 135, height: 112 },
                 "Racun - BA": { x: 417, y: 420, width: 135, height: 112 },
                 "Racun - MK": { x: 417, y: 420, width: 135, height: 112 },
-                "Racun - ME": { x: 417, y: 420, width: 135, height: 112 }
+                "Racun - ME": { x: 417, y: 420, width: 135, height: 112 },
+                "Racun - AL": { x: 417, y: 420, width: 135, height: 112 },
+                "Racun - GLO": { x: 417, y: 420, width: 135, height: 112 }
             };
 
             let items = $scope.viewStats.selected_orders.map(i => i.id);
@@ -85,13 +86,13 @@ define(function(require) {
             let resultDocuments = [];
             let docIndex = 0;
             for (let i = 0; i < ordersDocuments.length; i++) {
-                let orderDocuments = ordersDocuments[i];
+                const orderDocuments = ordersDocuments[i];
 
                 for (let j = 0; j < orderDocuments.Documents.length; j++) {
-                    let document = orderDocuments.Documents[j];
-                    let qrTemplate = vm.templateQrs[document.DocumentName];
-                    let order = docIndex;
-                    let promise = pdfLib.PDFDocument.load(document.DocumentBase64)
+                    const document = orderDocuments.Documents[j];
+                    const qrTemplate = vm.templateQrs[document.DocumentName];
+                    const order = docIndex;
+                    const promise = pdfLib.PDFDocument.load(document.DocumentBase64)
                         .then(pdfDocument => {
                             if (!!qrTemplate && orderDocuments.QRCodeBase64) {
                                 return Promise.all([pdfDocument.embedPng(orderDocuments.QRCodeBase64), pdfDocument]);
@@ -148,12 +149,12 @@ define(function(require) {
                     iframe.style.display = "none";
                     iframe.src = blobURL;
                     iframe.onload = function () {
-                        iframe.focus();
-                        if (iframe.contentWindow) {
-                            iframe.contentWindow.print();
-                        } else {
-                            Core.Dialogs.addNotify("Content window is null", 'ERROR'); 
-                        }
+                      iframe.focus();
+                      if (iframe.contentWindow) {
+                        iframe.contentWindow.print();
+                      } else {
+                        Core.Dialogs.addNotify("Content window is null", 'ERROR'); 
+                      }
                     };
                     vm.setLoading(false);
                 })
@@ -172,7 +173,7 @@ define(function(require) {
             contentType = contentType || '';
             const sliceSize = 512;
             const byteCharacters = window.atob(content);
-
+        
             const byteArrays = [];
             for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
                 const slice = byteCharacters.slice(offset, offset + sliceSize);
