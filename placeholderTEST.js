@@ -7,7 +7,11 @@ define(function(require) {
   const placeholder = function ($scope) {
     const vm = this;
     vm.scope = $scope;
-    vm.buttons = [];
+    vm.buttons = [{
+      name: "Initial btn",
+      key: "Initial_key",
+      text: "Initial btn"
+    }];
 
     vm.isEnabled = (itemKey) => {
       return true;
