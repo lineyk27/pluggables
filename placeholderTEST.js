@@ -18,10 +18,6 @@ define(function(require) {
 
         vm.isEnabled = (itemKey) => true;
 
-        angular.element(document).ready(function () {
-            
-        });
-
         vm.onClick = function(itemKey, $event){
           
         };
