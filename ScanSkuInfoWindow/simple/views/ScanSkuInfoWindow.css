@@ -1,0 +1,35 @@
+.lwControl.dynamic {
+    max-width:100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    top: 50px!important;
+    left: 0!important;
+    width: 600px!important;
+    margin: 0 10px
+}
+
+.lwControl.dynamic>.content {
+    height: 100%!important;
+    width: 100%!important;
+    box-sizing: border-box
+}
+
+[ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell-contents{
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+[ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell input[type='text']{
+    width: 95%;
+    height: 98%;
+}
+
+[ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell input[type='text']:focus{
+    border-color: #247eb9;
+}
+
+
+.ui-grid-cell-contents .ui-grid-cell-focus{
+    background-color: #d8eef1;
+}

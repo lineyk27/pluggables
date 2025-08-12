@@ -1,0 +1,15 @@
+<div ng-controller="ScanSkuInfoWindowView">
+    <content>
+        <form id="someForm">
+            <div class="linngrid">
+                <div class="skuInfoGrid" ui-grid="gridOptions" style="height: 400px;"></div>
+            </div>
+        </form>
+        <footer>
+            <button class="btn func" ng-click="revertChanges()">Revert</button>
+            <button class="btn func btn-primary" ng-click="save(true)">
+                <i class="fa fa-check func"></i> Ready
+            </button>
+        </footer>
+    </content>
+</div>
