@@ -22,7 +22,7 @@ function ScanSkuInfoWindowView($scope, $element, $q, $timeout){
                 name: 'SKU', 
                 field: 'sku', 
                 displayName: 'SKU',
-                width: 150, 
+                width: 160, 
                 enableColumnResizing: true, 
             },
             { 
