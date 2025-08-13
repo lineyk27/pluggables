@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use strict";
 
 define(function(require) {
@@ -15,7 +16,7 @@ define(function(require) {
             background-color: #ffc21c;
         }
         .admin-note{
-            background-color: #fffb1c;
+            background-color:rgb(255, 251, 0);
         }
         .notes-wrapper{
             display: block;
@@ -144,20 +145,10 @@ define(function(require) {
         }
     `;
 
-    const setupStyles = function(isOld){
-        if (!window.stylesAdded) {
-            const stylesToAdd = isOld ? stylesOld : styles;
-            const styleElem = document.createElement('style');
-            styleElem.innerHTML = stylesToAdd;
-            document.head.appendChild(styleElem);
-            window.stylesAdded = true;
-        }
-    }
-
     const orderGridNotesTemplate = `
         <div style="height: 100%;">
-            <div ng-if="orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
-                <div ng-repeat="note in orderNotes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
+            <div ng-if="notes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+                <div ng-repeat="note in notes.slice((currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
                     <div class="order-note flex-container flex-column" ng-click="editNote(note, true)" ng-class="{ 'user-note': isUserNote(note), 'admin-note': !isUserNote(note) }">
                         <div class="order-note-text">
                             <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
@@ -168,13 +159,13 @@ define(function(require) {
                     </div>
                 </div>
             </div>
-            <div ng-if="orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+            <div ng-if="notes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
                 <div>No notes found</div>
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
             </div>
-            <div ng-if="orderNotes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+            <div ng-if="notes.length > 0" class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
                 <button ng-click="editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
                     Add note
                 </button>
@@ -190,6 +181,42 @@ define(function(require) {
         </div>
     `;
 
+    const orderGridNotesTemplateOld = `
+        <div style="height: 100%;">
+            <div ng-if="vm.notes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
+                <div ng-repeat="note in vm.notes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
+                    <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
+                        <div class="order-note-text">
+                            <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
+                        </div>
+                        <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="vm.notes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
+                <div>No notes found</div>
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
+            </div>
+            <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
+                <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
+                    Add note
+                </button>
+                <div class="flex-container flex-column">
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    </div>
+                    <div style="width: 20px;">
+                        <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
     const cellRenderer = class OrderNotesCellRenderer extends BaseCellRenderer {
         init(params){
             this.childScope = params.context.$scope.$new();
@@ -198,9 +225,9 @@ define(function(require) {
             angular.element(this.eGui).css('height', '100%');
             this.childScope.$apply(() => {
                 const scopeVm = this.childScope;
-                this.childScope.order = params.data;
-                this.childScope.orderNotes = params.context.__ordersNotes[this.childScope.order.OrderId];
-                this.childScope.onUpdate = params.context.__onUpdateOrderNotes;
+                this.childScope.orderId = params.data.OrderId;
+                this.childScope.notes = params.context.notesData.notes[params.data.OrderId] || [];
+                this.childScope.notesData = params.context.notesData;
                 this.childScope.currentPage = 1;
 
                 this.eGui.innerHTML = orderGridNotesTemplate;
@@ -211,7 +238,7 @@ define(function(require) {
                 }
                 
                 this.childScope.totalPages = function () {
-                    return Math.ceil(scopeVm.orderNotes.length / 3);
+                    return Math.ceil(scopeVm.notes.length / 3);
                 }
                 
                 this.childScope.isUserNote = function (note) {
@@ -220,6 +247,7 @@ define(function(require) {
                 }
                 
                 this.childScope.editNote = function (note, edit) {
+                    scopeVm.notesData.onChangeNote();
                     const ctrl = new Core.Control({
                         data: { note: note, edit: edit },
                         controlName: "Order_EditOrderNote",
@@ -227,23 +255,27 @@ define(function(require) {
                         width: "450px",
                         element: event.target,
                         position: "BOTTOM",
-                        newControl: true
+                        newControl: true,
+                        onBackDropClick: function (event) {
+                            scopeVm.notesData.onEndChangeNote();
+                        }
                     }, scopeVm.options);
                     
                     ctrl.onGetEvent = function (event) {
+                        scopeVm.notesData.onEndChangeNote();
                         if (event.result) {
                             if (event.action == "SAVE") {
                                 if (isEmptyOrSpaces(event.result.Note)) {
                                     Core.Dialogs.addNotify("Note can't be empty!", 'ERROR');
                                     return;
                                 }
-                                const index = scopeVm.orderNotes.indexOf(note);
-                
+                                const index = scopeVm.notes.indexOf(note);
+                                
                                 if (index == -1) {
-                                    scopeVm.orderNotes.push(event.result);
+                                    scopeVm.notes.push(event.result);
                                     scopeVm.saveNotes("created");
                                 } else {
-                                    scopeVm.orderNotes[index] = event.result;
+                                    scopeVm.notes[index] = event.result;
                                     scopeVm.saveNotes("edited");
                                 }
                             }
@@ -264,11 +296,11 @@ define(function(require) {
                         callback:
                             async (event) => {
                                 if (event.action == "YES") {
-                                    const index = scopeVm.orderNotes.indexOf(note);
-                                    const temp = scopeVm.orderNotes.length;
-                                    scopeVm.orderNotes.splice(index, 1);
+                                    const index = scopeVm.notes.indexOf(note);
+                                    const temp = scopeVm.notes.length;
+                                    scopeVm.notes.splice(index, 1);
                                     scopeVm.saveNotes("deleted");
-                                    if ((index + 1) === temp && scopeVm.orderNotes.length % 3 == 0 && scopeVm.currentPage > 1) {
+                                    if ((index + 1) === temp && scopeVm.notes.length % 3 == 0 && scopeVm.currentPage > 1) {
                                         scopeVm.currentPage--;
                                     }
                                 }
@@ -277,12 +309,12 @@ define(function(require) {
                 }
         
                 scopeVm.saveNotes = function(actionName){
-                    new Services.OrdersService().setOrderNotes(scopeVm.order.OrderId, scopeVm.orderNotes, function (result) {
+                    new Services.OrdersService().setOrderNotes(scopeVm.orderId, scopeVm.notes, function (result) {
                         if (result.error) {
                             Core.Dialogs.addNotify(result.error, 'ERROR');
                         } else {
                             Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
-                            scopeVm.onUpdate(scopeVm.order.OrderId, scopeVm.orderNotes);
+                            scopeVm.notesData.onUpdate(scopeVm.orderId, scopeVm.notes);
                         }
                     })
                 };
@@ -294,97 +326,129 @@ define(function(require) {
 
     const placeHolder = function ($scope) {
         const vm = this;
+        vm.scope = $scope;
         vm.macroService = new Services.MacroService(vm);
-        vm.viewOrders = [];
-        vm.columnShown = false;
-        vm.placeholderKey = "placeholderAddOrderNotesColumnTEST";
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
-        vm.hideNotes = "<i class=\"fa func fa-comments\"></i> Hide notes"
-        vm.preloadNotes = true;
+        vm.showColumn = false;
+        vm.ordersNotes = {};
+        vm.placeholderKey = "placeholderAddOrderNotesColumn";
+        vm.buttonHTML = "<i class=\"fa func fa-comments\"></i> Show notes";
+        vm.loadingNotesHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Show notes"
+        vm.hideNotesHTML = "<i class=\"fa func fa-comments\"></i> Hide notes"
+        vm._isEnabled = true;
+        vm.gridScope = null;
+        vm.isNewGrid = null;
 
-        vm.getItems = () => ([{
-            key: vm.placeholderKey,
-            text: "Show notes(TEST)",
-            icon: "fa func fa-comments"
-        }]);
+        vm.getItems = function () {
+            return [{
+                key: vm.placeholderKey,
+                text: "Show notes",
+                icon: "fa func fa-comments"
+            }];
+        };
+
+        vm.isVisible = function () { 
+            return true; 
+        };
+        
+        vm.isEnabled = function (itemKey) {
+            return vm._isEnabled;
+        };
 
         vm.setLoading = (isLoading) => {
             if (isLoading) {
-                vm.isEnabled = (itemKey) => false;
-                vm.agButton.html(vm.loadingHtml);
+                vm._isEnabled = false;
+                vm.agButton.html(vm.loadingNotesHTML);
             } else {
-                vm.isEnabled = (itemKey) => true;
-                vm.agButton.html(vm.hideNotes);
+                vm._isEnabled = true;
+                vm.agButton.html(vm.hideNotesHTML);
             }
+        };
+
+        vm.onClick = function (itemKey, $event) {
+            const orderIds = vm.scope.viewStats.orders?.map(i => i.OrderId) ?? [];
+
+            if (!orderIds.length) {
+                Core.Dialogs.addNotify("No orders found", 'WARNING');
+                return;
+            };
+
+            const privateCustomers = ['em@feroxon.com'];
+
+            const session = JSON.parse(window.localStorage.getItem('SPA_auth_session'));
+
+            let appName = 'Notes Manager - New Orders Screen';
+
+            if (session && privateCustomers.indexOf(session.email) > -1) {
+                appName = 'Notes Manager Custom';
+            }
+
+            if (!vm.showColumn) {
+                vm.setLoading(true);
+                vm.loadNotes({}, orderIds, 1, Math.ceil(orderIds.length / 100), appName, vm.addNotesColumn);
+            } else {
+                vm.removeNotesColumn();
+            };
         };
 
         angular.element(document).ready(function () {
             vm.button = document.querySelectorAll(`button[key='${vm.placeholderKey}']`)[0];
             vm.agButton = angular.element(vm.button);
-            vm.buttonInnerHTML = vm.button.innerHTML;
+            vm.buttonHTML = vm.button.innerHTML;
         });
 
-        vm.isEnabled = (itemKey) => {
-            return true;
-        };
-
-        vm.ordersLoadedWatch = $scope.$watch(() => $scope.viewStats?.orders?.map(i => i.OrderId), function(newVal, oldVal){
-            // let oldIds = oldVal.map(i => i.OrderId);
-            let newIds = newVal.map(i => i.OrderId);
-            // if (newIds.toString() !== oldIds.toString()) {
-            //     vm.columnShown = false;
-            //     vm.agButton.html(vm.buttonInnerHTML);
-            // }
-            if (vm.preloadNotes && !!newIds && newIds.length == $scope.viewStats?.TotalOrders) {
-                console.log("Loaded " + newIds.length + " orders");
-                vm.onClick('', null);
+        vm.scope.$watch(() => vm.scope.viewStats.orders?.map(i => i.OrderId) ?? [], function(newVal, oldVal){
+            const oldIds = oldVal.map(i => i.OrderId);
+            const newIds = newVal.map(i => i.OrderId);
+            
+            if (newIds.toString() !== oldIds.toString()) {
+                vm.showColumn = false;
+                vm.agButton.html(vm.buttonHTML);
             }
         }, true);
 
-        vm.onClick = (itemKey, $event) => {
-            vm.viewOrders = $scope.viewStats.orders.map(i => i.OrderId);
-            if (!vm.viewOrders.length) {
-                Core.Dialogs.addNotify("No orders found", 'WARNING');
+        vm.addNotesColumn = () => {
+            const newGrid = angular.element("stacked-view-grid")[0];
+            const isNewGrid = !!newGrid;
+
+            if (isNewGrid) {
+                vm.gridScope = angular.element("stacked-view-grid").scope();
+            } else if (angular.element("view-grid")) {
+                vm.gridScope = angular.element("view-grid").scope();
+            } else {
+                Core.Dialogs.addNotify("Cant find view grid scope", 'WARNING');
+                vm.setLoading(false);
                 return;
             }
 
-            const privateCustomers = ['em@feroxon.com'];
+            const notesData = {
+                notes: vm.ordersNotes,
+                onUpdate: function(orderId, notes){
+                    vm.ordersNotes[orderId] = notes;
+                },
+                onChangeNote: function () {
+                    vm.scope.unbind_events();
+                },
+                onEndChangeNote: function () {
+                    vm.scope.bind_events();
+                }
+            };
+            
+            vm.gridScope.$ctrl.notesData = notesData;
 
-            const appName = vm.getAppNameByCustomer(privateCustomers);
-
-            if (!vm.columnShown) {
-                vm.setLoading(true);
-                const totalPages = Math.ceil(vm.viewOrders.length / 100);
-                vm.loadNotes({}, vm.viewOrders, 1, totalPages, appName, vm.addNotesColumn);
-            } else {
-                vm.removeNotesColumn();
+            if (!window.stylesAdded) {
+                const stylesToAdd = isNewGrid ? styles : stylesOld;
+                const styleElem = document.createElement('style');
+                styleElem.innerHTML = stylesToAdd;
+                document.head.appendChild(styleElem);
+                window.stylesAdded = true;
             }
-        };
-        
-        vm.getAppNameByCustomer = (privateCustomers) => {
-            const session = JSON.parse(window.localStorage.getItem('SPA_auth_session'));
-            if (session && privateCustomers.indexOf(session.email) > -1) {
-                return 'Notes Manager Custom';
-            } else {
-                return 'Notes Manager - New Orders Screen';
-            }
-        };
 
-        vm.addNotesColumn = (ordersNotes) => {
-            let gridScope = angular.element("stacked-view-grid") && angular.element("stacked-view-grid").scope();
-
-            if (gridScope) {
-                setupStyles(false);
-                gridScope.$ctrl.__ordersNotes = ordersNotes;
-                gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
-                    this.__ordersNotes[orderId] = notes;
-                }.bind(gridScope.$ctrl);
-
-                let columnDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
-                const nextSequence = Math.max(...columnDefs.map(o => o.sequence))
-    
+            if (isNewGrid) {
+                let columnDefs = vm.gridScope.$ctrl.api.gridApi.getColumnDefs();
+                const maxSequence = Math.max(...columnDefs.map(o => o.sequence));
+                
                 const columnDefinition = new AGGridColumn({ 
-                    sequence: nextSequence, 
+                    sequence: maxSequence + 1, 
                     code: 'NOTES', 
                     pinned: null, 
                     name: 'Notes', 
@@ -394,76 +458,69 @@ define(function(require) {
                 });
                 
                 columnDefs = columnDefs.concat([columnDefinition]);
-    
-                gridScope.$ctrl.api.gridOptions.api.setColumnDefs(columnDefs);
-                vm.columnShown = true;
-                vm.setLoading(false);
-            } else {
-                gridScope = angular.element("view-grid") && angular.element("view-grid").scope();
-
-                if (!gridScope) {
-                    Core.Dialogs.addNotify("Cant find view grid scope", 'WARNING');
-                    vm.setLoading(false);
-                    return;
-                }
-                setupStyles(true);
-
-                gridScope.$ctrl.__ordersNotes = ordersNotes;
-                gridScope.$ctrl.__onUpdateOrderNotes = function (orderId, notes) {
-                    this.__ordersNotes[orderId] = notes;
-                }.bind(gridScope.$ctrl);
-
+                
+                vm.gridScope.$ctrl.api.gridApi.setColumnDefs(columnDefs);
+            } else {                
                 const columnDefinition = {
-                    sequence: gridScope.$ctrl.gridOpts.columnDefs.length + 1,
+                    sequence: vm.gridScope.$ctrl.gridOpts.columnDefs.length + 1,
                     code: "NOTES",
                     name: "Notes",
                     displayName: "Notes",
                     referencedName: "Notes",
-                    cellTemplate: "<order-grid-notes item='row.entity' on-update='grid.appScope.__onUpdateOrderNotes' notes='grid.appScope.__ordersNotes[row.entity.OrderId]'></order-grid-notes>",
+                    cellTemplate: "<order-grid-notes item='row.entity' notes-data='grid.appScope.notesData'></order-grid-notes>",
                     width: 500,
                     enableColumnMoving: true,
                     enableColumnResizing: true,
                     type: "string"
                 };
 
-                gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
-                vm.columnShown = true;
-                vm.setLoading(false);
+                vm.gridScope.$ctrl.gridOpts.columnDefs.push(columnDefinition)
             }
+
+            vm.isNewGrid = isNewGrid;
+            vm.showColumn = true;
+            vm.setLoading(false);
         };
 
         vm.removeNotesColumn = () => {
-            let gridScope = angular.element("stacked-view-grid").scope();
-            let colDefs = gridScope.$ctrl.api.gridOptions.api.getColumnDefs();
-            let colInd = colDefs.findIndex(item => item.code === "NOTES");
-            if (colInd > -1) {
-                colDefs.splice(colInd, 1);
+            if (vm.isNewGrid) {
+                let columnDefs = vm.gridScope.$ctrl.api.gridApi.getColumnDefs();
+                const colInd = columnDefs.findIndex(item => item.code === "NOTES");
+                if (colInd > -1) {
+                    columnDefs.splice(colInd, 1);
+                }
+                vm.gridScope.$ctrl.api.gridApi.setColumnDefs(columnDefs);
+            } else {
+                const colInd = vm.gridScope.$ctrl.gridOpts.columnDefs.findIndex(item => item.code === "NOTES");
+                if (colInd > -1) {
+                    vm.gridScope.$ctrl.gridOpts.columnDefs.splice(colInd, 1);
+                } else {
+                    console.error("Column notes not found");
+                }
             }
-            gridScope.$ctrl.api.gridOptions.api.setColumnDefs(colDefs);
-            vm.columnShown = false;
-            vm.agButton.html(vm.buttonInnerHTML);
+
+            vm.showColumn = false;
+            vm.agButton.html(vm.buttonHTML);
         };
 
-        vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, appName, finishCallback) => {
+        vm.loadNotes = (ordersNotes, allOrderIds, pageNumber, totalPages, appName, callback) => {
             const orderIds = paginate(allOrderIds, 100, pageNumber);
             vm.macroService.Run({applicationName: appName, macroName: "NotesManagerMacro", orderIds: orderIds}, function(result) {
-                if (!result.error) {
-                    if (result.result.Error) {
-                        Core.Dialogs.addNotify(result.result.Error, 'ERROR');
-                        return;
-                    };
-
-                    ordersNotes = Object.assign({}, ordersNotes, result.result.OrdersNotes);
-
-                    if (pageNumber == totalPages) {
-                        finishCallback && finishCallback(ordersNotes);
-                    } else {
-                        vm.loadNotes(ordersNotes, allOrderIds, pageNumber + 1, totalPages, appName, finishCallback);
-                    }
-                } else {
-                    Core.Dialogs.addNotify(result.error, 'ERROR');
+                if (result.error || result.result.Error) {
+                    const error = result.error || result.result.Error;
+                    Core.Dialogs.addNotify(error, 'ERROR');
                     vm.setLoading(false);
+                    return;
                 }
+                
+                ordersNotes = Object.assign({}, ordersNotes, result.result.OrdersNotes);
+
+                if (pageNumber == totalPages) {
+                    vm.ordersNotes = ordersNotes;
+                    return callback && callback();
+                }
+                
+                vm.loadNotes(ordersNotes, allOrderIds, pageNumber + 1, totalPages, appName, callback);
             });
         };
 
@@ -473,42 +530,6 @@ define(function(require) {
     };
 
     placeholderManager.register("OpenOrders_OrderControlButtons", placeHolder);
-
-    const orderGridNotesTemplateOld = `
-    <div style="height: 100%;">
-        <div ng-if="vm.orderNotes.length > 0" class="notes-wrapper flex-container flex-column" style="min-height: 80%; max-height: 80%;">
-            <div ng-repeat="note in vm.orderNotes.slice((vm.currentPage-1)*3) | limitTo: 3 track by $index" class="order-note-wrapper">
-                <div class="order-note flex-container flex-column" ng-click="vm.editNote(note, true)" ng-class="{ 'user-note': vm.isUserNote(note), 'admin-note': !vm.isUserNote(note) }">
-                    <div class="order-note-text">
-                        <p class="order-note-text-wrap" ng-attr-title="{{note.Note}}" >{{note.Note}}</p>
-                    </div>
-                    <div ng-click="vm.deleteNote($event, note);" style="cursor: pointer;">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div ng-if="vm.orderNotes.length == 0" class="flex-container flex-row justify-center no-notes-wrapper">                
-            <div>No notes found</div>
-            <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                Add note
-            </button>
-        </div>
-        <div class="flex-container note-footer flex-column" style="min-height: 20%; max-height: 20%;">
-            <button ng-click="vm.editNote(null, true);" class="primary" style="font-weight: 400; padding: 2px; line-height: 10px;height: 18px;" >
-                Add note
-            </button>
-            <div class="flex-container flex-column">
-                <div style="width: 20px;">
-                    <div ng-show="vm.currentPage > 1" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, -1);" class="page-button"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                </div>
-                <div style="width: 20px;">
-                    <div ng-show="vm.currentPage < vm.totalPages()" ng-dblclick="$event.stopPropagation()" ng-click="vm.addPage($event, 1)" class="page-button"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    `;
 
     function OrderGridNotesCtrl ($scope){
         const vm = this;
@@ -521,7 +542,7 @@ define(function(require) {
         }, true);
 
         vm.$onInit = function () {
-            vm.orderNotes = angular.copy(vm.notes);
+            vm.notes = vm.notesData.notes[vm.item.OrderId] || [];
             vm.order = angular.copy(vm.item);
         }
 
@@ -531,7 +552,7 @@ define(function(require) {
         }
 
         vm.totalPages = function () {
-            return Math.ceil(vm.orderNotes.length / 3);
+            return Math.ceil(vm.notes.length / 3);
         }
 
         vm.isUserNote = function (note) {
@@ -540,6 +561,7 @@ define(function(require) {
         }
 
         vm.editNote = function (note, edit) {
+            vm.notesData.onChangeNote();
             let ctrl = new Core.Control({
                 data: { note: note, edit: edit },
                 controlName: "Order_EditOrderNote",
@@ -547,29 +569,33 @@ define(function(require) {
                 width: "450px",
                 element: event.target,
                 position: "BOTTOM",
-                newControl: true
+                newControl: true,
+                onBackDropClick: function (event) {
+                    vm.notesData.onEndChangeNote();
+                }
             }, vm.options);
             
             ctrl.onGetEvent = function (event) {
+                vm.notesData.onEndChangeNote();
                 if (event.result) {
                     if (event.action == "SAVE") {
                         if (isEmptyOrSpaces(event.result.Note)) {
                             Core.Dialogs.addNotify("Note can't be empty!", 'ERROR');
                             return;
                         }
-                        const index = vm.orderNotes.indexOf(note);
+                        const index = vm.notes.indexOf(note);
         
                         if (index == -1) {
-                            vm.orderNotes.push(event.result);
+                            vm.notes.push(event.result);
                             vm.saveNotes("created");
                         } else {
-                            vm.orderNotes[index] = event.result;
+                            vm.notes[index] = event.result;
                             vm.saveNotes("edited");
                         }
                     }
                 }
             };
-        
+            
             ctrl.open();
         }
 
@@ -585,11 +611,11 @@ define(function(require) {
                 callback:
                     async (event) => {
                         if (event.action == "YES") {
-                            const index = vm.orderNotes.indexOf(note);
-                            let temp = vm.orderNotes.length;
-                            vm.orderNotes.splice(index, 1);
+                            const index = vm.notes.indexOf(note);
+                            let temp = vm.notes.length;
+                            vm.notes.splice(index, 1);
                             vm.saveNotes("deleted");
-                            if ((index + 1) === temp && vm.orderNotes.length % 3 == 0 && vm.currentPage > 1) {
+                            if ((index + 1) === temp && vm.notes.length % 3 == 0 && vm.currentPage > 1) {
                                 vm.currentPage--;
                             }
                         }
@@ -598,12 +624,12 @@ define(function(require) {
         }
 
         vm.saveNotes = function(actionName){
-            new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.orderNotes, function (result) {
+            new Services.OrdersService().setOrderNotes(vm.order.OrderId, vm.notes, function (result) {
                 if (result.error) {
                     Core.Dialogs.addNotify(result.error, 'ERROR');
                 } else {
                     Core.Dialogs.addNotify(`Note ${actionName} succesfully`, 'SUCCESS');
-                    vm.onUpdate(vm.order.OrderId, vm.orderNotes);
+                    vm.notesData.onUpdate(vm.order.OrderId, vm.notes);
                 }
             })
         };
@@ -615,8 +641,7 @@ define(function(require) {
             controllerAs: "vm",
             bindings: {
                 item: "=",
-                notes: "=",
-                onUpdate: "="
+                notesData: "="
             },
             controller: OrderGridNotesCtrl
         });

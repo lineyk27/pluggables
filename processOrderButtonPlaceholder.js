@@ -66,7 +66,7 @@ define(function (require) {
                 macroService.GetMacroConfigurations(response => {
                     const macroConfig = response.result.find(x => x.ApplicationName === "3492_SplitOrderLabels" && x.MacroName === "3492_SplitOrderLabels");
                     if (!macroConfig) {
-                        Core.Dialogs.addNotify({ message: `Not found macro config`, type: "ERROR", timeout: 5000 });
+                        Core.Dialogs.addNotify({ message: `Macro config not found`, type: "ERROR", timeout: 5000 });
                         vm.isLoading = false;
                         return;
                     }
@@ -103,7 +103,7 @@ define(function (require) {
         const template = `
             <button ng-click="vm.onClick($event)" class="btn" ng-class="{loading: vm.isLoading, func: !vm.isLoading}" ng-disabled="vm.isLoading" >
                 <i class="fa fa-truck func"></i>
-                {{vm.isLoading ? 'Loading...' : 'Generate labels'}}
+                {{vm.isLoading ? 'Loading...' : 'Generate labels NEW'}}
             </button>
           `;
 
@@ -115,5 +115,3 @@ define(function (require) {
             });
     });
 });
-
-//https://lineyk27.github.io/pluggables/placeholderChannelDescriptions.js
