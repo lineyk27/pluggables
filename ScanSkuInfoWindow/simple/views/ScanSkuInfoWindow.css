@@ -14,6 +14,10 @@
     box-sizing: border-box
 }
 
+[ng-controller=ScanSkuInfoWindowView] .content > content {
+    padding: 0;
+}
+
 [ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell-contents{
     width: 100%;
     height: 100%;
