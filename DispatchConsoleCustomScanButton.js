@@ -173,10 +173,6 @@ define(function(require) {
                 controller: ScanSkuInfoButtonController
             });
 
-        angular.module('ScanSkuInfoWindow', [
-            'ui.grid.edit'
-        ]);
-        
         function showError(message){
             Core.Dialogs.addNotify({
                 message: message,

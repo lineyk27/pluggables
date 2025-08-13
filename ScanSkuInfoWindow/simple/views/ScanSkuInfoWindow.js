@@ -63,12 +63,11 @@ function ScanSkuInfoWindowView($scope, $element, $q, $timeout){
         vm.onSave && vm.onSave(vm.scope.gridOptions.data);
     };
 
-    vm.scope.revertChanges = () => {
+    vm.scope.cancel = () => {
         vm.onClose && vm.onClose();
     };
 
     function focusNextElement() {
-        //add all elements we want to include in our selection
         const focussableElements = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
         if (document.activeElement && document.activeElement.form) {
             const focussable = Array.prototype.filter.call(document.activeElement.form.querySelectorAll(focussableElements),
