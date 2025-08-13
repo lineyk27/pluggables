@@ -1,4 +1,4 @@
-.lwControl.dynamic {
+.lwControl.dynamic[ng-controller="ScanSkuInfoWindowView"] {
     max-width:100%;
     max-height: 100%;
     box-sizing: border-box;
@@ -8,7 +8,7 @@
     margin: 0 10px
 }
 
-.lwControl.dynamic>.content {
+.lwControl.dynamic[ng-controller="ScanSkuInfoWindowView"]>.content {
     height: 100%!important;
     width: 100%!important;
     box-sizing: border-box
@@ -28,7 +28,6 @@
 [ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell input[type='text']:focus{
     border-color: #247eb9;
 }
-
 
 .ui-grid-cell-contents .ui-grid-cell-focus{
     background-color: #d8eef1;
