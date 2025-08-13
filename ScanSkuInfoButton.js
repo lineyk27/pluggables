@@ -113,10 +113,7 @@ define(function(require) {
                     width: "450px",
                     element: null,
                     position: "VIEWPORT_CENTRE",
-                    newControl: true,
-                    onBackDropClick: function (event) {
-                        console.log("Backdrop click!", event);
-                    }
+                    newControl: true
                 }, {});
 
                 ctrl.open();
