@@ -33,6 +33,6 @@
     border-color: #247eb9;
 }
 
-.ui-grid-cell-contents .ui-grid-cell-focus{
+[ng-controller="ScanSkuInfoWindowView"] .ui-grid-cell-contents .ui-grid-cell-focus{
     background-color: #d8eef1;
 }
