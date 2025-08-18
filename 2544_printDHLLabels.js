@@ -3,35 +3,25 @@
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     const pdfLib = require("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.js");
-    const macroService = new Services.MacroService();
-
-    const applicationName = "DHL_Germany_Shipping_DEV";
-    const macroName = "2544_GenerateDHLGermanyDocTEST";
-    const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
-    const placeholderText = "Print shipping documents (TEST)";
-    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
-    const LABELS_PAGE_SIZE = 10;
-
-    // const applicationName = "DHL_Germany_Shipping_PROD";
-    // const macroName = "2544_GenerateDHLGermanyDocs";
-    // const placeholderKey = "placeholderPrintShippingDocumentsDHLGermany";
-    // const placeholderText = "Print shipping documents";
-    // const LABELS_PAGE_SIZE = 3;
 
     const placeHolder = function ($scope) {
         const vm = this;
         vm.scope = $scope;
+        vm.printService = new Services.PrintService(vm);
+        vm.macroService = new Services.MacroService(vm);
+        vm.buttonPlaceholderKey = "placeholderPrintShippingDocumentsDHLGermany";
+        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
 
         vm.getItems = () => ([{
-            key: placeholderKey,
-            text: placeholderText,
+            key: vm.buttonPlaceholderKey,
+            text: "Print shipping documents",
             icon: "fa-print"
         }]);
 
         vm.setLoading = (isLoading) => {
             if (isLoading) {
                 vm.isEnabled = (itemKey) => false;
-                vm.agButton.html(loadingButtonHTML);
+                vm.agButton.html(vm.loadingHtml);
             } else {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
@@ -39,9 +29,9 @@ define(function(require) {
         };
 
         angular.element(document).ready(function () {
-            const buttonElem = document.querySelectorAll(`button[key='${placeholderKey}']`)[0];
-            vm.buttonInnerHTML = buttonElem.innerHTML;
-            vm.agButton = angular.element(buttonElem);
+            vm.button = document.querySelectorAll(`button[key='${vm.buttonPlaceholderKey}']`)[0];
+            vm.agButton = angular.element(vm.button);
+            vm.buttonInnerHTML = vm.button.innerHTML;
 
             vm.ordersSelectedWatch = $scope.$watch(() => $scope.viewStats.selected_orders, function(newVal, oldVal){
                 if (newVal && newVal.length) {
@@ -60,27 +50,34 @@ define(function(require) {
             };
 
             vm.setLoading(true);
-            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / LABELS_PAGE_SIZE));
+            await vm.loadFilesAndPrint([], items, 1, Math.ceil(items.length / 4));
         };
         
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
-            macroService.Run({applicationName, macroName, orderIds: paginate(allOrderIds, LABELS_PAGE_SIZE, pageNumber)}, async function (result) {
-                if (result.error) {
+            let orderIds = paginate(allOrderIds, 4, pageNumber);
+            vm.macroService.Run({applicationName: "DHL_Germany_Shipping_PROD", macroName: "2544_GenerateDHLGermanyDocs", orderIds}, async function (result) {
+                if (!result.error) {
+                    if (result.result.IsError) {
+                        Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
+                    };
+                    if (result.result === null) {
+                        Core.Dialogs.addNotify({message: "Result is null", type: "ERROR", timeout: 5000});
+                        vm.setLoading(false);
+                        return;
+                    };
+                    documents = documents.concat(result.result.OrderLabels);
+                    if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length > 0) {
+                        allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
+                        totalPages = Math.ceil(allOrderIds.length / 4);
+                    }
+                    if (pageNumber == totalPages) {
+                        await vm.addLabelsAndPrint(documents);
+                    } else {
+                        await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
+                    }
+                } else {
                     Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
                     vm.setLoading(false);
-                    return;
-                }
-
-                if (result.result.IsError) {
-                    Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
-                };
-
-                documents = documents.concat(result.result.OrderLabels);
-
-                if (pageNumber == totalPages) {
-                    await vm.addLabelsAndPrint(documents);
-                } else {
-                    await vm.loadFilesAndPrint(documents, allOrderIds, pageNumber + 1, totalPages);
                 }
             });
         };
@@ -157,7 +154,7 @@ define(function(require) {
             let embeddedImage = await pdfDocument.embedPng(pngImageBase64);
             const {width: imageWidth, height: imageHeight } = embeddedImage.size();
         
-            let [newImageWidth, newImageHeight] = resizeFitNewSize(imageWidth, imageHeight, boxHeight, boxWidth);
+            let [newImageWidth, newImageHeight] = reduceSizeWithProportion(imageWidth, imageHeight, boxHeight, boxWidth);
         
             let labelPage = pdfDocument.getPages()[pageNumber];
 
@@ -176,26 +173,25 @@ define(function(require) {
             return pdfDocument;
         }
 
-        function resizeFitNewSize(width, height, maxWidth, maxHeight){
+        function reduceSizeWithProportion(width, height, maxWidth, maxHeight){
             if (width > maxWidth){
                 let reduceCoef = maxWidth / width;
                 width *= reduceCoef;
                 height *= reduceCoef;
-                return resizeFitNewSize(width, height, maxWidth, maxHeight);
-            }
+                return reduceSizeWithProportion(width, height, maxWidth, maxHeight);
+            } 
             if (height > maxHeight) {
                 let reduceCoef = maxHeight / height;
                 width *= reduceCoef;
                 height *= reduceCoef;
-                return resizeFitNewSize(width, height, maxWidth, maxHeight);
-            }
-            
+                return reduceSizeWithProportion(width, height, maxWidth, maxHeight);
+            } 
             return [width, height];
         }
 
         function getDocumentIndices(pdfDoc){
             let arr = [];
-            for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+            for(let i = 0; i < pdfDoc.getPageCount(); i++){
                 arr.push(i);
             }
             return arr;
@@ -203,7 +199,7 @@ define(function(require) {
 
         function paginate(array, page_size, page_number) {
             return array.slice((page_number - 1) * page_size, page_number * page_size);
-        }
+        };
 
         function b64toBlob(content, contentType) {
             contentType = contentType || '';
@@ -224,7 +220,7 @@ define(function(require) {
                 type: contentType
             });
             return blob;
-        }
+        };
 
         function printPDFInNewWindow(pdfBase64) {
             const blob = b64toBlob(pdfBase64, "application/pdf");
