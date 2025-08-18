@@ -9,17 +9,18 @@ define(function(require) {
     const macroName = "2544_GenerateDHLGermanyDocTEST";
     const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
     const placeholderText = "Print shipping documents (TEST)";
+    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
     const LABELS_PAGE_SIZE = 3;
 
     // const applicationName = "DHL_Germany_Shipping_PROD";
     // const macroName = "2544_GenerateDHLGermanyDocs";
     // const placeholderKey = "placeholderPrintShippingDocumentsDHLGermany";
-    //const placeholderText = "Print shipping documents";
+    // const placeholderText = "Print shipping documents";
+    // const LABELS_PAGE_SIZE = 3;
 
     const placeHolder = function ($scope) {
         const vm = this;
         vm.scope = $scope;
-        vm.loadingHtml = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
 
         vm.getItems = () => ([{
             key: placeholderKey,
@@ -30,7 +31,7 @@ define(function(require) {
         vm.setLoading = (isLoading) => {
             if (isLoading) {
                 vm.isEnabled = (itemKey) => false;
-                vm.agButton.html(vm.loadingHtml);
+                vm.agButton.html(loadingButtonHTML);
             } else {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
@@ -38,9 +39,9 @@ define(function(require) {
         };
 
         angular.element(document).ready(function () {
-            vm.button = document.querySelectorAll(`button[key='${placeholderKey}']`)[0];
-            vm.agButton = angular.element(vm.button);
-            vm.buttonInnerHTML = vm.button.innerHTML;
+            const buttonElem = document.querySelectorAll(`button[key='${placeholderKey}']`)[0];
+            vm.buttonInnerHTML = buttonElem.innerHTML;
+            vm.agButton = angular.element(buttonElem);
 
             vm.ordersSelectedWatch = $scope.$watch(() => $scope.viewStats.selected_orders, function(newVal, oldVal){
                 if (newVal && newVal.length) {
