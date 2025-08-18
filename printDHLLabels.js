@@ -10,7 +10,7 @@ define(function(require) {
     const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
     const placeholderText = "Print shipping documents (TEST)";
     const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
-    const LABELS_PAGE_SIZE = 10;
+    const LABELS_PAGE_SIZE = 3;
 
     // const applicationName = "DHL_Germany_Shipping_PROD";
     // const macroName = "2544_GenerateDHLGermanyDocs";
