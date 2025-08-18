@@ -6,7 +6,7 @@ define(function(require) {
     const macroService = new Services.MacroService();
 
     const applicationName = "DHL_Germany_Shipping_DEV";
-    const macroName = "2544_GenerateDHLGermanyDocsTEST";
+    const macroName = "2544_GenerateDHLGermanyDocTEST";
     const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
     const placeholderText = "Print shipping documents (TEST)";
     const LABELS_PAGE_SIZE = 3;
