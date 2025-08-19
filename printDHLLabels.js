@@ -78,7 +78,7 @@ define(function(require) {
 
                 documents = documents.concat(result.result.OrderLabels);
 
-                if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length && result.result.OrderLabels.length) { // TODO: CHECK!!!!!!!!!!
+                if (result.result.OrderIdsLeft.length && result.result.OrderLabels.length) { // TODO: CHECK!!!!!!!!!!
                     allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
                     totalPages = Math.ceil(allOrderIds.length / 4);
                 }
