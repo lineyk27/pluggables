@@ -9,13 +9,14 @@ define(function(require) {
     const macroName = "2544_GenerateDHLGermanyDocTEST";
     const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
     const placeholderText = "Print shipping documents (TEST)";
-    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
+    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents (TEST)";
     const LABELS_PAGE_SIZE = 3;
 
     // const applicationName = "DHL_Germany_Shipping_PROD";
     // const macroName = "2544_GenerateDHLGermanyDocs";
     // const placeholderKey = "placeholderPrintShippingDocumentsDHLGermany";
     // const placeholderText = "Print shipping documents";
+    // const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
     // const LABELS_PAGE_SIZE = 3;
 
     const placeHolder = function ($scope) {
@@ -76,6 +77,11 @@ define(function(require) {
                 };
 
                 documents = documents.concat(result.result.OrderLabels);
+
+                if (result.result.OrderIdsLeft && result.result.OrderIdsLeft.length && result.result.OrderLabels.length) { // TODO: CHECK!!!!!!!!!!
+                    allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
+                    totalPages = Math.ceil(allOrderIds.length / 4);
+                }
 
                 if (pageNumber == totalPages) {
                     await vm.addLabelsAndPrint(documents);
