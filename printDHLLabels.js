@@ -80,7 +80,7 @@ define(function(require) {
 
                 if (result.result.OrderIdsLeft.length && result.result.OrderLabels.length) { // TODO: CHECK!!!!!!!!!!
                     allOrderIds = allOrderIds.concat(result.result.OrderIdsLeft);
-                    totalPages = Math.ceil(allOrderIds.length / 4);
+                    totalPages = Math.ceil(allOrderIds.length / LABELS_PAGE_SIZE);
                 }
 
                 if (pageNumber == totalPages) {
