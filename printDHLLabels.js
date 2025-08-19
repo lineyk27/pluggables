@@ -10,7 +10,7 @@ define(function(require) {
     const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
     const placeholderText = "Print shipping documents (TEST)";
     const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents (TEST)";
-    const LABELS_PAGE_SIZE = 3;
+    const LABELS_PAGE_SIZE = 10;
 
     // const applicationName = "DHL_Germany_Shipping_PROD";
     // const macroName = "2544_GenerateDHLGermanyDocs";
@@ -54,7 +54,7 @@ define(function(require) {
         });
 
         vm.onClick = async (itemKey, $event) => {
-            let items = $scope.viewStats.selected_orders.map(i => i.id);
+            let items = vm.scope.viewStats.selected_orders.map(i => i.id);
             
             if (!items || !items.length) {
                 return;
