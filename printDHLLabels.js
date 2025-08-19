@@ -67,13 +67,13 @@ define(function(require) {
         vm.loadFilesAndPrint = async (documents, allOrderIds, pageNumber, totalPages) => {
             macroService.Run({applicationName, macroName, orderIds: paginate(allOrderIds, LABELS_PAGE_SIZE, pageNumber)}, async function (result) {
                 if (result.error) {
-                    Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 5000})
+                    Core.Dialogs.addNotify({message: result.error, type: "ERROR", timeout: 10000})
                     vm.setLoading(false);
                     return;
                 }
 
                 if (result.result.IsError) {
-                    Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 5000});
+                    Core.Dialogs.addNotify({message: result.result.ErrorMessage, type: "ERROR", timeout: 10000});
                 };
 
                 documents = documents.concat(result.result.OrderLabels);
