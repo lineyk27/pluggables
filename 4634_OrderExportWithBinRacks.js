@@ -27,7 +27,7 @@ define(function(require) {
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
+            // const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
 
             if (!ids.length)
                 return;
@@ -53,12 +53,12 @@ define(function(require) {
                 }
 
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
-                    vm.createReport(orders, viewOrders, locations);
+                    vm.createReport(orders, locations);
                 }); 
             });
-        };
+        }
 
-        vm.createReport = (orders, viewOrders, locations) => {
+        vm.createReport = (orders, locations) => {
             const query = `
                 WITH itemBinRacks AS (
                     SELECT  fkStockitemId
@@ -90,7 +90,7 @@ define(function(require) {
                     return;
                 }
 
-                const rowData = ordersToRowData(orders, viewOrders, response.result.Results);
+                const rowData = ordersToRowData(orders, response.result.Results);
                 
                 const csv = createCSVFromObjects(rowData);
 
@@ -101,11 +101,11 @@ define(function(require) {
 
                 vm.setLoading(false);
             });
-        };
+        }
 
         vm.getOrders = (ids, pageNumber, totalPages, orders, callback) => {
             const idsPage = paginate(ids, ORDERS_PAGE_SIZE, pageNumber);
-            ordersService.GetOrdersById(idsPage, function (response) {
+            ordersService.getOrders(idsPage, vm.scope.$parent.viewStats.LocationId, true, false, function (response) {
                 if (response.error) {
                     showError(response.error?.ErrorMessage ?? "Error loading orders");
                     vm.setLoading(false);
@@ -120,7 +120,7 @@ define(function(require) {
                     callback && callback(orders);
                 }
             });
-        };
+        }
 
         function paginate(array, page_size, page_number) {
             return array.slice((page_number - 1) * page_size, page_number * page_size);
@@ -134,18 +134,17 @@ define(function(require) {
             document.body.appendChild(link);
             link.click();
             window.URL.revokeObjectURL(link);
-        };
+        }
 
-        function ordersToRowData(orders, viewOrders, itemsBinracks) {
+        function ordersToRowData(orders, itemsBinracks) {
             const rowData = [];
             const accountHash = JSON.parse(window.localStorage.getItem('SPA_auth_session')).md5Hash;
             for (const order of orders) { 
-                const viewOrder = viewOrders.find(o => o.OrderId = order.OrderId);
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
-                    // const viewItem = viewOrder?.Items?.find(i => i.RowId == item.RowId);
-                    const date = new Date(order.GeneralInfo.ReceivedDate);
-                    const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
+                    const orderDate = order.GeneralInfo.ReceivedDate;
+                    // const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
+
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
@@ -158,7 +157,7 @@ define(function(require) {
                         'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
                         'Order Is Parked': boolToString(order.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
-                        'Received Date': `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
+                        'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
                         'Identifiers': order.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
@@ -168,12 +167,12 @@ define(function(require) {
                         'Name': order.CustomerInfo?.Address?.FullName ?? '', 
                         'Company': order.CustomerInfo?.Address?.Company ?? '',
                         'Town': order.CustomerInfo?.Address?.Town ?? '',
-                        'Postcode': order.CustomerInfo?.Address?.Postcode ?? '',
+                        'Postcode': order.CustomerInfo?.Address?.PostCode ?? '',
                         'Country': order.CustomerInfo?.Address?.Country ?? '',
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
-                        'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
-                        'Image': imageUrl,
+                        'Fulfillment State': order?.Fulfillment?.FulfillmentState ?? '',
+                        'Image': item.ImageUrl,
                         'Quantity': item.Quantity ?? '',
                         'Line Totals': item.CostIncTax ?? '',
                         'SKU': item.SKU ?? '',
@@ -223,7 +222,7 @@ define(function(require) {
                 csv += Object.values(obj).map(d => `"${d}"`).join() + '\r\n';
             }
             return csv;
-        };
+        }
 
         vm.getItems = () => {
             return [{
@@ -232,11 +231,11 @@ define(function(require) {
                 icon: icon,
                 cssClass: ''
             }];
-        };
+        }
 
         vm.isEnabled = (itemKey) => {
             return true;
-        };
+        }
 
         vm.setLoading = (isLoading) => {
             if (isLoading) {
@@ -246,7 +245,7 @@ define(function(require) {
                 vm.isEnabled = (itemKey) => true;
                 vm.agButton.html(vm.buttonInnerHTML);
             }
-        };
+        }
 
         angular.element(document).ready(function () {
             const buttonElem = document.querySelectorAll(`button[key='${key}']`)[0];
