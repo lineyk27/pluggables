@@ -156,7 +156,7 @@ define(function(require) {
                         'Invoice Is Printed': boolToString(order.GeneralInfo?.InvoicePrinted),
                         'Picklist Is Printed': boolToString(order.GeneralInfo?.PickListPrinted),
                         'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
-                        'Order Is Parked': boolToString(order.GeneralInfo?.IsParked),
+                        'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
                         'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
                         'Identifiers': viewOrder.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
