@@ -52,7 +52,7 @@ define(function(require) {
                     return;
                 }
 
-                vm.getOrders(ids, 1, Math.ceil(items.length / ORDERS_PAGE_SIZE), [], (orders) => {
+                vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
                     vm.createReport(orders, locations);
                 }); 
             });
