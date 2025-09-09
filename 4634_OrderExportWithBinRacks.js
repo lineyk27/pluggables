@@ -21,13 +21,13 @@ define(function(require) {
     // const applicationName = "4634_OrderExportWithBinRacks";
     // const macroName = "4634_OrderExportWithBinRacks";
 
-    function placeholder($scope){
+    function placeholder ($scope) {
         const vm = this;
         vm.scope = $scope;
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
+            // const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
             if (!orders.length)
                 return;
