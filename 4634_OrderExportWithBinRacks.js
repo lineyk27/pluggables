@@ -4,7 +4,6 @@ define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     const macroService = new Services.MacroService();
     const dashboardService = new Services.DashboardsService();
-    const ordersService = new Services.OrdersService();
 
     const key = "placeholderCustomOrderExportTEST";
     const name = "Export orders to csv (TEST)";
@@ -12,7 +11,6 @@ define(function(require) {
     const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     const applicationName = "4634_OrderExportWithBinRacks";
     const macroName = "4634_OrderExportWithBinRacks";
-    const ORDERS_PAGE_SIZE = 100;
 
     // const key = "placeholderOrderExportWithBinRacks";
     // const name = "Export orders to csv";
@@ -25,22 +23,10 @@ define(function(require) {
         const vm = this;
         vm.scope = $scope;
 
-        vm.onClick = async () => {
+        vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            // const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
+            const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
-            if (!ids.length)
-                return;
-
-            let orders = [];
-
-            for (let i = 0; i < Math.ceil(ids.length / ORDERS_PAGE_SIZE); i++) {
-                const idsPage = paginate(ids, ORDERS_PAGE_SIZE, i + 1);
-                const ordersPage = await ordersService.GetOrdersById(idsPage);
-
-                orders = [...orders, ...ordersPage];
-            }
-            
             if (!orders.length)
                 return;
 
@@ -122,10 +108,6 @@ define(function(require) {
             link.click();
             window.URL.revokeObjectURL(link);
         };
-
-        function paginate(array, page_size, page_number) {
-            return array.slice((page_number - 1) * page_size, page_number * page_size);
-        }
 
         function ordersToRowData(orders, itemsBinracks) {
             const rowData = [];
