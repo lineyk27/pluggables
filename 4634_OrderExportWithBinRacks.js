@@ -24,7 +24,7 @@ define(function(require) {
         vm.scope = $scope;
 
         vm.onClick = () => {
-            const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
+            const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.num_id) ?? [];
             const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
             if (!orders.length)
