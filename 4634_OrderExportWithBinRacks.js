@@ -27,7 +27,7 @@ define(function(require) {
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
+            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
 
             if (!ids.length)
                 return;
@@ -143,7 +143,7 @@ define(function(require) {
                 const viewOrder = viewOrders.find(o => o.OrderId = order.OrderId);
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
-                    const viewItem = viewOrder?.Items.find(i => i.RowId == item.RowId);
+                    const viewItem = viewOrder?.Items?.find(i => i.RowId == item.RowId);
                     const date = new Date(order.GeneralInfo.ReceivedDate);
                     const data = {
                         'Order Id': order.NumOrderId,
@@ -171,7 +171,7 @@ define(function(require) {
                         'Country': order.CustomerInfo?.Address?.Country ?? '',
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
-                        'Fulfillment State': viewOrder.Fulfillment?.FulfillmentState ?? '',
+                        'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
                         'Image': viewItem.ImageUrl ?? '',
                         'Quantity': item.Quantity ?? '',
                         'Line Totals': item.CostIncTax ?? '',
