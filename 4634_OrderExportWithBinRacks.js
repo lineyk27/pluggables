@@ -138,13 +138,14 @@ define(function(require) {
 
         function ordersToRowData(orders, viewOrders, itemsBinracks) {
             const rowData = [];
-
+            const accountHash =  window.localStorage.getItem('SPA_auth_session').md5Hash;
             for (const order of orders) { 
                 const viewOrder = viewOrders.find(o => o.OrderId = order.OrderId);
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
-                    const viewItem = viewOrder?.Items?.find(i => i.RowId == item.RowId);
+                    // const viewItem = viewOrder?.Items?.find(i => i.RowId == item.RowId);
                     const date = new Date(order.GeneralInfo.ReceivedDate);
+                    const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
@@ -172,7 +173,7 @@ define(function(require) {
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
                         'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
-                        'Image': viewItem.ImageUrl ?? '',
+                        'Image': imageUrl,
                         'Quantity': item.Quantity ?? '',
                         'Line Totals': item.CostIncTax ?? '',
                         'SKU': item.SKU ?? '',
