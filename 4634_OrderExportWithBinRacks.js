@@ -27,7 +27,7 @@ define(function(require) {
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            // const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
+            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
             if (!ids.length)
                 return;
@@ -53,12 +53,12 @@ define(function(require) {
                 }
 
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
-                    vm.createReport(orders, locations);
+                    vm.createReport(orders, viewOrders, locations);
                 }); 
             });
         };
 
-        vm.createReport = (orders, locations) => {
+        vm.createReport = (orders, viewOrders, locations) => {
             const query = `
                 WITH itemBinRacks AS (
                     SELECT  fkStockitemId
@@ -90,7 +90,7 @@ define(function(require) {
                     return;
                 }
 
-                const rowData = ordersToRowData(orders, response.result.Results);
+                const rowData = ordersToRowData(orders, viewOrders, response.result.Results);
                 
                 const csv = createCSVFromObjects(rowData);
 
@@ -136,12 +136,15 @@ define(function(require) {
             window.URL.revokeObjectURL(link);
         };
 
-        function ordersToRowData(orders, itemsBinracks) {
+        function ordersToRowData(orders, viewOrders, itemsBinracks) {
             const rowData = [];
 
             for (const order of orders) { 
+                const viewOrder = viewOrders.find(o => o.OrderId = order.OrderId);
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
+                    const viewItem = viewOrder?.Items.find(i => i.RowId == item.RowId);
+                    
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
@@ -161,15 +164,15 @@ define(function(require) {
                         'Service': order.ShippingInfo?.PostalServiceName ?? '',
                         'Packaging Type': order.ShippingInfo?.PackageType ?? '',
                         'Total Weight': order.ShippingInfo?.TotalWeight ?? '',
-                        'Name': order.CustomerInfo?.Address?.FullName ?? '',
+                        'Name': order.CustomerInfo?.Address?.FullName ?? '', 
                         'Company': order.CustomerInfo?.Address?.Company ?? '',
                         'Town': order.CustomerInfo?.Address?.Town ?? '',
                         'Postcode': order.CustomerInfo?.Address?.Postcode ?? '',
                         'Country': order.CustomerInfo?.Address?.Country ?? '',
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
-                        'Fulfillment State': order.Fulfillment?.FulfillmentState ?? '',
-                        'Image': item.ImageUrl ?? '',
+                        'Fulfillment State': viewOrder.Fulfillment?.FulfillmentState ?? '',
+                        'Image': viewItem.ImageUrl ?? '',
                         'Quantity': item.Quantity ?? '',
                         'Line Totals': item.CostIncTax ?? '',
                         'SKU': item.SKU ?? '',
