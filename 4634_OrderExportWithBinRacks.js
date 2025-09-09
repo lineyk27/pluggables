@@ -29,30 +29,30 @@ define(function(require) {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
             // const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
-            if (!orders.length)
+            if (!ids.length)
                 return;
 
-            vm.getOrders(ids, 1, Math.ceil(items.length / ORDERS_PAGE_SIZE), [], (orders) => {
-                vm.setLoading(true);
+            vm.setLoading(true);
 
-                macroService.GetMacroConfigurations((response) => {
-                    const macroConfig = response.result.find((x) => x.ApplicationName === applicationName && x.MacroName === macroName);
-                    
-                    if (!macroConfig) {
-                        showError('Not found macro config');
-                        vm.setLoading(false);
-                        return;
-                    }
+            macroService.GetMacroConfigurations((response) => {
+                const macroConfig = response.result.find((x) => x.ApplicationName === applicationName && x.MacroName === macroName);
+                
+                if (!macroConfig) {
+                    showError('Not found macro config');
+                    vm.setLoading(false);
+                    return;
+                }
 
-                    const parameter = macroConfig.Parameters.find((x) => x.ParameterName === 'location');
-                    const locations = parameter?.ParameterValue?.split(',') ?? [];
+                const parameter = macroConfig.Parameters.find((x) => x.ParameterName === 'location');
+                const locations = parameter?.ParameterValue?.split(',') ?? [];
 
-                    if (!locations.length) {
-                        showError('Locations are empty');
-                        vm.setLoading(false);
-                        return;
-                    }
+                if (!locations.length) {
+                    showError('Locations are empty');
+                    vm.setLoading(false);
+                    return;
+                }
 
+                vm.getOrders(ids, 1, Math.ceil(items.length / ORDERS_PAGE_SIZE), [], (orders) => {
                     vm.createReport(orders, locations);
                 }); 
             });
