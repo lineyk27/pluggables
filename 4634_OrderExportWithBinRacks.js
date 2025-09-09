@@ -144,7 +144,7 @@ define(function(require) {
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
                     const viewItem = viewOrder?.Items.find(i => i.RowId == item.RowId);
-                    
+                    const date = new Date(order.GeneralInfo.ReceivedDate);
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
@@ -157,7 +157,7 @@ define(function(require) {
                         'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
                         'Order Is Parked': boolToString(order.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
-                        'Received Date': order.GeneralInfo?.ReceivedDate ?? '',
+                        'Received Date': `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
                         'Identifiers': order.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
