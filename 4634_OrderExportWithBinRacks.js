@@ -27,7 +27,7 @@ define(function(require) {
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
-            // const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
+            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
 
             if (!ids.length)
                 return;
@@ -53,12 +53,12 @@ define(function(require) {
                 }
 
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
-                    vm.createReport(orders, locations);
+                    vm.createReport(orders, viewOrders, locations);
                 }); 
             });
         }
 
-        vm.createReport = (orders, locations) => {
+        vm.createReport = (orders, viewOrders, locations) => {
             const query = `
                 WITH itemBinRacks AS (
                     SELECT  fkStockitemId
@@ -90,7 +90,7 @@ define(function(require) {
                     return;
                 }
 
-                const rowData = ordersToRowData(orders, response.result.Results);
+                const rowData = ordersToRowData(orders, viewOrders, response.result.Results);
                 
                 const csv = createCSVFromObjects(rowData);
 
@@ -136,10 +136,11 @@ define(function(require) {
             window.URL.revokeObjectURL(link);
         }
 
-        function ordersToRowData(orders, itemsBinracks) {
+        function ordersToRowData(orders, viewOrders, itemsBinracks) {
             const rowData = [];
             const accountHash = JSON.parse(window.localStorage.getItem('SPA_auth_session')).md5Hash;
             for (const order of orders) { 
+                const viewOrder = viewOrders.find(v => v.NumOrderId === order.NumOrderId);
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
                     const orderDate = new Date(order.GeneralInfo.ReceivedDate);
@@ -158,7 +159,7 @@ define(function(require) {
                         'Order Is Parked': boolToString(order.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
                         'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
-                        'Identifiers': order.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
+                        'Identifiers': viewOrder.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
                         'Service': order.ShippingInfo?.PostalServiceName ?? '',
