@@ -7,17 +7,17 @@ define(function(require) {
 
     const key = "placeholderCustomOrderExportTEST";
     const name = "Export orders to csv (TEST)";
-    const icon = "fa func fa-cloud-download";
+    const icon = "fa func fa-download";
     const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     const applicationName = "4634_OrderExportWithBinRacks";
     const macroName = "4634_OrderExportWithBinRacks";
 
-    // const key = "placeholderCustomOrderExportTEST";
-    // const name = "Export orders to csv (TEST)";
-    // const icon = "fa func fa-cloud-download";
-    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
-    // const applicationName = "";
-    // const macroName = "";
+    // const key = "placeholderOrderExportWithBinRacks";
+    // const name = "Export orders to csv";
+    // const icon = "fa func fa-download";
+    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    // const applicationName = "4634_OrderExportWithBinRacks";
+    // const macroName = "4634_OrderExportWithBinRacks";
 
     function placeholder($scope){
         const vm = this;
@@ -25,11 +25,10 @@ define(function(require) {
 
         vm.onClick = () => {
             const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.num_id ?? o.id) ?? [];
-
-            if (!ids.length)
+            const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
+            
+            if (!orders.length)
                 return;
-
-            const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1);
 
             vm.setLoading(true);
 
@@ -74,7 +73,6 @@ define(function(require) {
                         *
                         ,RANK() OVER (PARTITION BY fkStockitemId ORDER BY PrioritySequence ASC, Quantity DESC) AS rank
                     FROM itemBinRacks
-                    
                 )
                 SELECT *
                 FROM priorityBinRacks
@@ -90,7 +88,7 @@ define(function(require) {
 
                 const rowData = ordersToRowData(orders, response.result.Results);
                 
-                const csv = createCSVFromArray(rowData);
+                const csv = createCSVFromObjects(rowData);
 
                 const date = new Date();
                 const fileName = `OpenOrders_Export_${date.getDay()}_${date.getMonth()}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
@@ -117,7 +115,6 @@ define(function(require) {
             for (const order of orders) { 
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockItemId === item.StockItemId)?.BinRack;
-
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.ExternalReferenceNum,
@@ -184,15 +181,15 @@ define(function(require) {
             return !!value ? 'TRUE' : "FALSE"
         }
 
-        function createCSVFromArray(data) {
+        function createCSVFromObjects(data) {
             let headerAdded = false;
             let csv = '';
             for (const obj of data) {
                 if (!headerAdded) {
-                    csv += Object.keys(obj).join() + "\r\n"; 
+                    csv += Object.keys(obj).map(d => `"${d}"`).join() + "\r\n"; 
                     headerAdded = true;
                 }
-                csv += Object.values(obj).join() + '\r\n';
+                csv += Object.values(obj).map(d => `"${d}"`).join() + '\r\n';
             }
             return csv;
         };
