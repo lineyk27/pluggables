@@ -114,7 +114,7 @@ define(function(require) {
 
             for (const order of orders) { 
                 for (const item of order.Items) {
-                    const bin = itemsBinracks.find(i => i.fkStockItemId === item.StockItemId)?.BinRack;
+                    const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
