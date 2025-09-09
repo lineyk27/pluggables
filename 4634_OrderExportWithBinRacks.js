@@ -4,6 +4,7 @@ define(function(require) {
     const placeholderManager = require("core/placeholderManager");
     const macroService = new Services.MacroService();
     const dashboardService = new Services.DashboardsService();
+    const ordersService = new Services.OrdersService();
 
     const key = "placeholderCustomOrderExportTEST";
     const name = "Export orders to csv (TEST)";
@@ -11,6 +12,7 @@ define(function(require) {
     const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     const applicationName = "4634_OrderExportWithBinRacks";
     const macroName = "4634_OrderExportWithBinRacks";
+    const ORDERS_PAGE_SIZE = 100;
 
     // const key = "placeholderOrderExportWithBinRacks";
     // const name = "Export orders to csv";
@@ -24,33 +26,35 @@ define(function(require) {
         vm.scope = $scope;
 
         vm.onClick = () => {
-            const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.num_id) ?? [];
+            const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
             const orders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.NumOrderId) > -1) ?? [];
 
             if (!orders.length)
                 return;
 
-            vm.setLoading(true);
+            vm.getOrders(ids, 1, Math.ceil(items.length / ORDERS_PAGE_SIZE), [], (orders) => {
+                vm.setLoading(true);
 
-            macroService.GetMacroConfigurations((response) => {
-                const macroConfig = response.result.find((x) => x.ApplicationName === applicationName && x.MacroName === macroName);
-                
-                if (!macroConfig) {
-                    showError('Not found macro config');
-                    vm.setLoading(false);
-                    return;
-                }
+                macroService.GetMacroConfigurations((response) => {
+                    const macroConfig = response.result.find((x) => x.ApplicationName === applicationName && x.MacroName === macroName);
+                    
+                    if (!macroConfig) {
+                        showError('Not found macro config');
+                        vm.setLoading(false);
+                        return;
+                    }
 
-                const parameter = macroConfig.Parameters.find((x) => x.ParameterName === 'location');
-                const locations = parameter?.ParameterValue?.split(',') ?? [];
+                    const parameter = macroConfig.Parameters.find((x) => x.ParameterName === 'location');
+                    const locations = parameter?.ParameterValue?.split(',') ?? [];
 
-                if (!locations.length) {
-                    showError('Locations are empty');
-                    vm.setLoading(false);
-                    return;
-                }
+                    if (!locations.length) {
+                        showError('Locations are empty');
+                        vm.setLoading(false);
+                        return;
+                    }
 
-                vm.createReport(orders, locations);
+                    vm.createReport(orders, locations);
+                }); 
             });
         };
 
@@ -98,6 +102,29 @@ define(function(require) {
                 vm.setLoading(false);
             });
         };
+
+        vm.getOrders = (ids, pageNumber, totalPages, orders, callback) => {
+            const idsPage = paginate(ids, ORDERS_PAGE_SIZE, pageNumber);
+            ordersService.GetOrdersById(idsPage, function (response) {
+                if (response.error) {
+                    showError(response.error?.ErrorMessage ?? "Error loading orders");
+                    vm.setLoading(false);
+                    return;
+                }
+
+                orders = [...orders, response.result];
+
+                if (pageNumber < totalPages) {
+                    vm.getOrders(ids, pageNumber + 1, totalPages, orders, callback);
+                } else {
+                    callback && callback(orders);
+                }
+            });
+        };
+
+        function paginate(array, page_size, page_number) {
+            return array.slice((page_number - 1) * page_size, page_number * page_size);
+        }
 
         function downloadFile(url, name) {
             const link = document.createElement('a');
