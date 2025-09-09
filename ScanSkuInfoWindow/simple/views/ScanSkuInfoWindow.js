@@ -17,19 +17,20 @@ function ScanSkuInfoWindowView($scope, $element, $q, $timeout){
         onRegisterApi: function(gridApi) {
             vm.gridApi = gridApi;
         },
+        enableVerticalScrollbar: 2,
         columnDefs:  [
             { 
                 name: 'SKU', 
                 field: 'sku', 
                 displayName: 'SKU',
-                width: 160, 
+                width: "40%", 
                 enableColumnResizing: true, 
             },
             { 
                 name: 'SLP', 
                 field: 'slp', 
                 displayName: 'SLP',
-                width: 200, 
+                width: "30%", 
                 enableColumnResizing: true, 
                 cellTemplate: cellInputTemplate
             },
@@ -37,7 +38,7 @@ function ScanSkuInfoWindowView($scope, $element, $q, $timeout){
                 name: 'Cost Centre', 
                 field: 'costCentre',
                 displayName: 'Cost Centre', 
-                width: 200, 
+                width: "30%", 
                 enableColumnResizing: true,
                 cellTemplate: cellInputTemplate
             }

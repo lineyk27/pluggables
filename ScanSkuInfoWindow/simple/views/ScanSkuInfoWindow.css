@@ -3,8 +3,8 @@
     max-height: 100%;
     box-sizing: border-box;
     top: calc(50vh - (510px / 2));
-    left: calc(50vw - (600px / 2));
-    width: 600px!important;
+    left: calc(50vw - (700px / 2));
+    width: 700px!important;
     margin: 0 10px
 }
 

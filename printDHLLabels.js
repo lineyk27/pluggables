@@ -5,19 +5,19 @@ define(function(require) {
     const pdfLib = require("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.js");
     const macroService = new Services.MacroService();
 
-    const applicationName = "DHL_Germany_Shipping_DEV";
-    const macroName = "2544_GenerateDHLGermanyDocTEST";
-    const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
-    const placeholderText = "Print shipping documents (TEST)";
-    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents (TEST)";
-    const LABELS_PAGE_SIZE = 3;
-
-    // const applicationName = "DHL_Germany_Shipping_PROD";
-    // const macroName = "2544_GenerateDHLGermanyDocs";
-    // const placeholderKey = "placeholderPrintShippingDocumentsDHLGermany";
-    // const placeholderText = "Print shipping documents";
-    // const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
+    // const applicationName = "DHL_Germany_Shipping_DEV";
+    // const macroName = "2544_GenerateDHLGermanyDocTEST";
+    // const placeholderKey = "placeholderPrintShippingDocumentsDHLGermanyTEST";
+    // const placeholderText = "Print shipping documents (TEST)";
+    // const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents (TEST)";
     // const LABELS_PAGE_SIZE = 3;
+
+    const applicationName = "DHL_Germany_Shipping_PROD";
+    const macroName = "2544_GenerateDHLGermanyDocs";
+    const placeholderKey = "placeholderPrintShippingDocumentsDHLGermany";
+    const placeholderText = "Print shipping documents";
+    const loadingButtonHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Print shipping documents";
+    const LABELS_PAGE_SIZE = 3;
 
     const placeHolder = function ($scope) {
         const vm = this;

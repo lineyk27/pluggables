@@ -117,9 +117,9 @@ define(function(require) {
                     const bin = itemsBinracks.find(i => i.fkStockItemId === item.StockItemId)?.BinRack;
                     const data = {
                         'Order Id': order.NumOrderId,
-                        'External Reference': order.ExternalReferenceNum,
+                        'External Reference': order.GeneralInfo.ExternalReferenceNum,
                         'Status': statusToString(order.Status),
-                        'Tag': !!order.Marker ? `Tag ${order.Marker}` : '',
+                        'Tag': !!order.GeneralInfo.Marker ? `Tag ${order.GeneralInfo.Marker}` : '',
                         'Source': order.GeneralInfo.Source,
                         'SubSource': order.GeneralInfo.SubSource,
                         'Invoice Is Printed': boolToString(order.GeneralInfo.InvoicePrinted),

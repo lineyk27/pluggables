@@ -31,7 +31,6 @@ define(function(require) {
                             const newButton = angular.element('<scan-sku-info-button></scan-sku-info-button>')
                             const ngElem = angular.element(result);
                             ngElem.prepend(newButton);
-                            // const ngScope = ngElem.scope();
 
                             const parentScope = angular.element(document.querySelector("div[ng-controller='OpenOrders_ProcessOrdersView']")).scope();
 
@@ -59,6 +58,17 @@ define(function(require) {
             vm.orderNotes = [];
             vm.noteRegexp = /SKU:\s*(?<sku>[^;]+);*\s*SLP:\s*(?<slp>[^;]*);*\s*Cost Centre:\s*(?<costCentre>[^;]*)/;
 
+            vm.$onInit = () => {
+                const originalFunc = vm.scope.$parent.process;
+                vm.scope.$parent.process = ($event) => {
+                    if (vm.checkAllScanned()) {
+                        originalFunc($event);
+                    } else {
+                        showError("All notes need to be scanned!");
+                    }
+                };
+            };
+
             vm.onClick = () => {
                 vm.orderNotes = vm.scope.$parent.currentOrderNotes;
 
@@ -78,7 +88,7 @@ define(function(require) {
                     }
                 }
 
-                for (const item of vm.scope.$parent.currentOrder.Items) {
+                for (const item of vm.scope.$parent.currentOrder.Items.filter(i => !i.IsService)) {
                     for (let i = 0; i < item.Quantity; i++) {
                         const infoInd = skuInfos.findIndex(i => i.sku === item.ItemNumber);
                         if (infoInd > -1) {
@@ -86,7 +96,7 @@ define(function(require) {
                             skuInfos.splice(infoInd, 1);
                         } else {
                             vm.skuInfos.push({
-                                sku: item.ItemNumber,
+                                sku: item.SKU,
                                 slp: '',
                                 costCentre: ''
                             });
@@ -110,7 +120,7 @@ define(function(require) {
                     moduleName: "ScanSkuInfoWindow",
                     controlName: "ScanSkuInfoWindow",
                     height: "510px",
-                    width: "450px",
+                    width: "550px",
                     element: null,
                     position: "VIEWPORT_CENTRE",
                     newControl: true
@@ -142,7 +152,7 @@ define(function(require) {
                         });
                     }
                 }
-
+                
                 ordersService.setOrderNotes(vm.scope.$parent.currentOrder.OrderId, notes, function (response) {
                     if (response.error?.errorMessage) {
                         showError(`Error saving notes: ${response.error?.errorMessage}`);
@@ -153,13 +163,19 @@ define(function(require) {
                     showSuccess("Updates notes succesfully");
                 });
             };
+
+            vm.checkAllScanned = () => {
+                const itemsQuantity = vm.scope.$parent.currentOrder.Items.filter(i => !i.IsService).map(i => i.Quantity).reduce((a, b) => a + b, 0);
+                const scannedInfoCount = vm.skuInfos.filter(i => !!i.slp && !!i.costCentre).length;
+                return itemsQuantity === scannedInfoCount;
+            };
         };
 
         const buttonTemplate = 
         `
             <button ng-click="vm.onClick($event)" class="btn func">
                 <i class="fa fa-th-large func"></i>
-                Info Notes
+                Add Notes
             </button>
         `;
 
