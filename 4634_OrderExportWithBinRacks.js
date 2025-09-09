@@ -34,7 +34,7 @@ define(function(require) {
 
             let orders = [];
 
-            for (let i = 0; i < Math.ceil(items.length / ORDERS_PAGE_SIZE); i++) {
+            for (let i = 0; i < Math.ceil(ids.length / ORDERS_PAGE_SIZE); i++) {
                 const idsPage = paginate(ids, ORDERS_PAGE_SIZE, i + 1);
                 const ordersPage = await ordersService.GetOrdersById(idsPage);
 
