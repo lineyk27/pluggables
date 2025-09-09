@@ -142,8 +142,8 @@ define(function(require) {
             for (const order of orders) { 
                 for (const item of order.Items) {
                     const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
-                    const orderDate = order.GeneralInfo.ReceivedDate;
-                    // const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
+                    const orderDate = new Date(order.GeneralInfo.ReceivedDate);
+                    const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
 
                     const data = {
                         'Order Id': order.NumOrderId,
@@ -157,7 +157,7 @@ define(function(require) {
                         'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
                         'Order Is Parked': boolToString(order.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
-                        'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
+                        'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
                         'Identifiers': order.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
@@ -172,7 +172,7 @@ define(function(require) {
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
                         'Fulfillment State': order?.Fulfillment?.FulfillmentState ?? '',
-                        'Image': item.ImageUrl,
+                        'Image': imageUrl,
                         'Quantity': item.Quantity ?? '',
                         'Line Totals': item.CostIncTax ?? '',
                         'SKU': item.SKU ?? '',
