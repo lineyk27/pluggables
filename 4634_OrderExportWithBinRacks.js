@@ -112,7 +112,7 @@ define(function(require) {
                     return;
                 }
 
-                orders = [...orders, response.result];
+                orders = [...orders, ...response.result];
 
                 if (pageNumber < totalPages) {
                     vm.getOrders(ids, pageNumber + 1, totalPages, orders, callback);
