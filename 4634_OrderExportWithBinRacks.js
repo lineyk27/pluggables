@@ -149,7 +149,7 @@ define(function(require) {
                     const data = {
                         'Order Id': order.NumOrderId,
                         'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
-                        'Status': statusToString(order.Status),
+                        'Status': statusToString(order.GeneralInfo?.Status),
                         'Tag': !!order.GeneralInfo?.Marker ? `Tag ${order.GeneralInfo?.Marker}` : '',
                         'Source': order.GeneralInfo?.Source ?? '',
                         'SubSource': order.GeneralInfo?.SubSource ?? '',
