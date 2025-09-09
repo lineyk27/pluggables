@@ -172,15 +172,15 @@ define(function(require) {
                         'Country': order.CustomerInfo?.Address?.Country ?? '',
                         'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
                         'Folder': order.FolderName?.join(', ') ?? '',
-                        'Fulfillment State': order?.Fulfillment?.FulfillmentState ?? '',
+                        'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
                         'Image': imageUrl,
                         'Quantity': item.Quantity ?? '',
-                        'Line Totals': item.CostIncTax ?? '',
+                        'Line Totals': round(item.CostIncTax, 2) ?? '',
                         'SKU': item.SKU ?? '',
                         'Title': item.Title ?? '',
-                        'Sub Total': order.TotalsInfo?.Subtotal ?? '',
-                        'Tax': order.TotalsInfo?.Tax ?? '',
-                        'Total Charge': order.TotalsInfo?.TotalCharge ?? '',
+                        'Sub Total': round(order.TotalsInfo?.Subtotal, 2) ?? '',
+                        'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
+                        'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
                         'Bin Rack': bin ?? '' 
                     };
 
@@ -189,6 +189,11 @@ define(function(require) {
             }
 
             return rowData;
+        }
+
+        function round (number, dig) {
+            const mul = Math.pow(10, dig)
+            return Math.round(number * mul) / mul;
         }
 
         function statusToString(status) {
