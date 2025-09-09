@@ -138,7 +138,7 @@ define(function(require) {
 
         function ordersToRowData(orders, viewOrders, itemsBinracks) {
             const rowData = [];
-            const accountHash =  window.localStorage.getItem('SPA_auth_session').md5Hash;
+            const accountHash = JSON.parse(window.localStorage.getItem('SPA_auth_session')).md5Hash;
             for (const order of orders) { 
                 const viewOrder = viewOrders.find(o => o.OrderId = order.OrderId);
                 for (const item of order.Items) {
