@@ -158,7 +158,7 @@ define(function(require) {
                         'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
                         'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
-                        'Received Date': `${orderDate.getDay()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
+                        'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
                         'Identifiers': viewOrder.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
@@ -178,7 +178,7 @@ define(function(require) {
                         'Line Totals': round(item.CostIncTax, 2) ?? '',
                         'SKU': item.SKU ?? '',
                         'Title': item.Title ?? '',
-                        'Sub Total': round(order.TotalsInfo?.Subtotal, 2) ?? '',
+                        'Sub Total': round(order.TotalsInfo?.Subtotal + order.TotalsInfo?.PostageCost, 2) ?? '',
                         'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
                         'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
                         'Bin Rack': bin ?? '' 
