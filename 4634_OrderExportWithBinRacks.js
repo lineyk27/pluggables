@@ -2,6 +2,8 @@
 
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
+    const serv = require("openOrdersAPIService");
+    
     const macroService = new Services.MacroService();
     const dashboardService = new Services.DashboardsService();
     const ordersService = new Services.OrdersService();
@@ -53,6 +55,7 @@ define(function(require) {
                     return;
                 }
 
+                
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
                     vm.createReport(orders, viewOrders, locations);
                 });
