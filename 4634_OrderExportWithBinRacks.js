@@ -80,8 +80,9 @@ define(function(require) {
                 )
                 SELECT *
                 FROM priorityBinRacks
-                WHERE Rank = 1
+                ORDER BY fkStockitemId, PrioritySequence
             `;
+            //--WHERE Rank = 1
             
             dashboardService.ExecuteCustomScriptQuery(query, function (response) {
                 if (response.error) {
@@ -142,7 +143,7 @@ define(function(require) {
             for (const order of orders) { 
                 const viewOrder = viewOrders.find(v => v.NumOrderId === order.NumOrderId);
                 for (const item of order.Items) {
-                    const bin = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId)?.BinRack;
+                    const binRack = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId && item.Quantity <= Number(i.Quantity));
                     const orderDate = new Date(order.GeneralInfo.ReceivedDate);
                     const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
 
@@ -181,7 +182,7 @@ define(function(require) {
                         'Sub Total': round(order.TotalsInfo?.Subtotal + order.TotalsInfo?.PostageCost, 2) ?? '',
                         'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
                         'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
-                        'Bin Rack': bin ?? '' 
+                        'Bin Rack': binRack?.BinRack ?? '' 
                     };
 
                     rowData.push(data);
