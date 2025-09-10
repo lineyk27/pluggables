@@ -71,7 +71,6 @@ define(function(require) {
                     INNER JOIN StockItem ON pkStockItemId = fkStockItemId
                     WHERE batch.Deleted = 0 AND batch_inventory.Deleted = 0 AND Location IN (${locations.map(l => `'${l}'`).join(',')}) 
                     GROUP BY fkStockItemId, batch_inventory.BinRack
-                    HAVING SUM (batch_inventory.Quantity) > 0
                 ), priorityBinRacks AS (
                     SELECT 
                         *
