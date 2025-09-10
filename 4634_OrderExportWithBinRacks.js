@@ -14,12 +14,13 @@ define(function(require) {
     const macroName = "4634_OrderExportWithBinRacks";
     const ORDERS_PAGE_SIZE = 100;
 
-    // const key = "placeholderOrderExportWithBinRacks";
+    // const key = "placeholderCustomOrderExport";
     // const name = "Export orders to csv";
     // const icon = "fa func fa-download";
     // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
     // const applicationName = "4634_OrderExportWithBinRacks";
     // const macroName = "4634_OrderExportWithBinRacks";
+    // const ORDERS_PAGE_SIZE = 100;
 
     function placeholder ($scope) {
         const vm = this;
@@ -54,7 +55,7 @@ define(function(require) {
 
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
                     vm.createReport(orders, viewOrders, locations);
-                }); 
+                });
             });
         }
 
@@ -213,7 +214,7 @@ define(function(require) {
         }
 
         function boolToString(value) {
-            return !!value ? 'TRUE' : "FALSE"
+            return !!value ? 'TRUE' : 'FALSE';
         }
 
         function createCSVFromObjects(data) {
