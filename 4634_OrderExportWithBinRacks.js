@@ -71,7 +71,7 @@ define(function(require) {
                     INNER JOIN [stockitem].batch_inventory ON pkBatchId = fkBatchId
                     INNER JOIN StockLocation ON fkStockLocationId = pkStockLocationId
                     INNER JOIN StockItem ON pkStockItemId = fkStockItemId
-                    WHERE batch.Deleted = 0 AND batch_inventory.Deleted = 0 AND Location IN (${locations.map(l => `'${l}'`).join(',')}) 
+                    WHERE batch.Deleted = 0 AND batch_inventory.Deleted = 0 AND Location IN (${locations.map(l => `'${l}'`).join()}) 
                     GROUP BY fkStockItemId, batch_inventory.BinRack
                 ), priorityBinRacks AS (
                     SELECT 
@@ -92,16 +92,29 @@ define(function(require) {
                     return;
                 }
 
-                const rowData = ordersToRowData(orders, viewOrders, response.result.Results);
+                const query2 = `
+                    SELECT  
+                        nOrderId
+                        ,STRING_AGG(Name,', ') as Identifiers
+                    FROM [order].identifier
+                    INNER JOIN [order].order_identifier
+                    ON pkIdentifierId = fkIdentifierId
+                    WHERE nOrderId IN (${orders.map(o => o.NumOrderId).join()})
+                    GROUP BY  nOrderId
+                `;
                 
-                const csv = createCSVFromObjects(rowData);
+                dashboardService.ExecuteCustomScriptQuery(query2, function(responce){
+                    const rowData = ordersToRowData(orders, viewOrders, response.result.Results, responce.result.Results);
+                    
+                    const csv = createCSVFromObjects(rowData);
 
-                const date = new Date();
-                const fileName = `OpenOrders_Export_${date.getDate()}_${date.getMonth()+1}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
-                const blobURL = URL.createObjectURL(new Blob([csv], { type: "text/plain" }));
-                downloadFile(blobURL, fileName);
+                    const date = new Date();
+                    const fileName = `OpenOrders_Export_${date.getDate()}_${date.getMonth()+1}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
+                    const blobURL = URL.createObjectURL(new Blob([csv], { type: "text/plain" }));
+                    downloadFile(blobURL, fileName);
 
-                vm.setLoading(false);
+                    vm.setLoading(false);
+                });
             });
         }
 
@@ -138,11 +151,12 @@ define(function(require) {
             window.URL.revokeObjectURL(link);
         }
 
-        function ordersToRowData(orders, viewOrders, itemsBinracks) {
+        function ordersToRowData(orders, viewOrders, itemsBinracks, identifiers) {
             const rowData = [];
             const accountHash = JSON.parse(window.localStorage.getItem('SPA_auth_session')).md5Hash;
             for (const order of orders) { 
                 const viewOrder = viewOrders.find(v => v.NumOrderId === order.NumOrderId);
+                const orderIdentifiers = identifiers.find(i => i.nOrderId)?.Identifiers;
                 for (const item of order.Items) {
                     const binRack = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId && item.Quantity <= Number(i.Quantity));
                     const orderDate = new Date(order.GeneralInfo.ReceivedDate);
@@ -161,7 +175,7 @@ define(function(require) {
                         'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
                         'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
-                        'Identifiers': viewOrder.GeneralInfo?.Identifiers?.map(i => i.Name)?.join(', ') ?? 'None',
+                        'Identifiers': orderIdentifiers?.map(i => i.Name)?.join(', ') ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
                         'Service': order.ShippingInfo?.PostalServiceName ?? '',
