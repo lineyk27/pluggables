@@ -96,7 +96,7 @@ define(function(require) {
                 const csv = createCSVFromObjects(rowData);
 
                 const date = new Date();
-                const fileName = `OpenOrders_Export_${date.getDay()}_${date.getMonth()}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
+                const fileName = `OpenOrders_Export_${date.getDate()}_${date.getMonth()+1}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
                 const blobURL = URL.createObjectURL(new Blob([csv], { type: "text/plain" }));
                 downloadFile(blobURL, fileName);
 
