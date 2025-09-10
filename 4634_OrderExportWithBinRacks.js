@@ -83,7 +83,6 @@ define(function(require) {
                 FROM priorityBinRacks
                 ORDER BY fkStockitemId, PrioritySequence
             `;
-            //--WHERE Rank = 1
             
             dashboardService.ExecuteCustomScriptQuery(query, function (response) {
                 if (response.error) {
@@ -175,7 +174,7 @@ define(function(require) {
                         'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
                         'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
                         'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
-                        'Identifiers': orderIdentifiers?.map(i => i.Name)?.join(', ') ?? 'None',
+                        'Identifiers': orderIdentifiers ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
                         'Vendor': order.ShippingInfo.Vendor ?? '',
                         'Service': order.ShippingInfo?.PostalServiceName ?? '',
