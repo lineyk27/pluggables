@@ -2,8 +2,6 @@
 
 define(function(require) {
     const placeholderManager = require("core/placeholderManager");
-    const serv = require("openOrdersAPIService");
-    
     const macroService = new Services.MacroService();
     const dashboardService = new Services.DashboardsService();
     const ordersService = new Services.OrdersService();
