@@ -6,21 +6,21 @@ define(function(require) {
     const dashboardService = new Services.DashboardsService();
     const ordersService = new Services.OrdersService();
 
-    const key = "placeholderCustomOrderExportTEST";
-    const name = "Export orders to csv (TEST)";
-    const icon = "fa func fa-download";
-    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
-    const applicationName = "4634_OrderExportWithBinRacks";
-    const macroName = "4634_OrderExportWithBinRacks";
-    const ORDERS_PAGE_SIZE = 100;
-
-    // const key = "placeholderCustomOrderExport";
-    // const name = "Export orders to csv";
+    // const key = "placeholderCustomOrderExportTEST";
+    // const name = "Export orders to csv (TEST)";
     // const icon = "fa func fa-download";
-    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     // const applicationName = "4634_OrderExportWithBinRacks";
     // const macroName = "4634_OrderExportWithBinRacks";
     // const ORDERS_PAGE_SIZE = 100;
+
+    const key = "placeholderOrderExportWithBinRacks";
+    const name = "Export orders to csv";
+    const icon = "fa func fa-download";
+    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    const applicationName = "4634_OrderExportWithBinRacks";
+    const macroName = "4634_OrderExportWithBinRacks";
+    const ORDERS_PAGE_SIZE = 100;
 
     function placeholder ($scope) {
         const vm = this;
@@ -52,7 +52,6 @@ define(function(require) {
                     vm.setLoading(false);
                     return;
                 }
-
                 
                 vm.getOrders(ids, 1, Math.ceil(ids.length / ORDERS_PAGE_SIZE), [], (orders) => {
                     vm.createReport(orders, viewOrders, locations);
@@ -176,7 +175,7 @@ define(function(require) {
                         'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
                         'Identifiers': orderIdentifiers ?? 'None',
                         'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
-                        'Vendor': order.ShippingInfo.Vendor ?? '',
+                        'Vendor': order.ShippingInfo?.Vendor ?? '',
                         'Service': order.ShippingInfo?.PostalServiceName ?? '',
                         'Packaging Type': order.ShippingInfo?.PackageType ?? '',
                         'Total Weight': order.ShippingInfo?.TotalWeight ?? '',
@@ -207,6 +206,8 @@ define(function(require) {
         }
 
         function round (number, dig) {
+            if(!number) 
+                return 0;
             const mul = Math.pow(10, dig)
             return Math.round(number * mul) / mul;
         }
