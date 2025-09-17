@@ -224,10 +224,10 @@ define(function(require) {
                 if (!binRack) 
                     break;
 
-                if (binRack.Quantity > item.Quantity) {
-                    binRacks.push({ BinRack: binRack.BinRack, Quantity: item.Quantity });
-                    quantity -= item.Quantity;
-                    binRack.Quantity -= item.Quantity;
+                if (binRack.Quantity > quantity) {
+                    binRacks.push({ BinRack: binRack.BinRack, Quantity: quantity });
+                    quantity -= quantity;
+                    binRack.Quantity -= quantity;
                 } else {
                     binRacks.push({ BinRack: binRack.BinRack, Quantity: binRack.Quantity });
                     quantity -= binRack.Quantity;
