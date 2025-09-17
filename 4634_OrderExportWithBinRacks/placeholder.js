@@ -6,21 +6,21 @@ define(function(require) {
     const dashboardService = new Services.DashboardsService();
     const ordersService = new Services.OrdersService();
 
-    // const key = "placeholderCustomOrderExportTEST";
-    // const name = "Export orders to csv (TEST)";
-    // const icon = "fa func fa-download";
-    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
-    // const applicationName = "4634_OrderExportWithBinRacks";
-    // const macroName = "4634_OrderExportWithBinRacks";
-    // const ORDERS_PAGE_SIZE = 100;
-
-    const key = "placeholderOrderExportWithBinRacks";
-    const name = "Export orders to csv";
+    const key = "placeholderCustomOrderExportTEST";
+    const name = "Export orders to csv (TEST)";
     const icon = "fa func fa-download";
-    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     const applicationName = "4634_OrderExportWithBinRacks";
     const macroName = "4634_OrderExportWithBinRacks";
     const ORDERS_PAGE_SIZE = 100;
+
+    // const key = "placeholderOrderExportWithBinRacks";
+    // const name = "Export orders to csv";
+    // const icon = "fa func fa-download";
+    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    // const applicationName = "4634_OrderExportWithBinRacks";
+    // const macroName = "4634_OrderExportWithBinRacks";
+    // const ORDERS_PAGE_SIZE = 100;
 
     function placeholder ($scope) {
         const vm = this;
