@@ -6,21 +6,21 @@ define(function(require) {
     const dashboardService = new Services.DashboardsService();
     const ordersService = new Services.OrdersService();
 
-    // const key = "placeholderCustomOrderExportTEST";
-    // const name = "Export orders to csv (TEST)";
-    // const icon = "fa func fa-download";
-    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
-    // const applicationName = "4634_OrderExportWithBinRacks";
-    // const macroName = "4634_OrderExportWithBinRacks";
-    // const ORDERS_PAGE_SIZE = 100;
-
-    const key = "placeholderOrderExportWithBinRacks";
-    const name = "Export orders to csv";
+    const key = "placeholderCustomOrderExportTEST";
+    const name = "Export orders to csv (TEST)";
     const icon = "fa func fa-download";
-    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv (TEST)";
     const applicationName = "4634_OrderExportWithBinRacks";
     const macroName = "4634_OrderExportWithBinRacks";
     const ORDERS_PAGE_SIZE = 100;
+
+    // const key = "placeholderOrderExportWithBinRacks";
+    // const name = "Export orders to csv";
+    // const icon = "fa func fa-download";
+    // const loadingNameHTML = "<i class=\"fa fa-spinner fa-spin\"></i> Export orders to csv";
+    // const applicationName = "4634_OrderExportWithBinRacks";
+    // const macroName = "4634_OrderExportWithBinRacks";
+    // const ORDERS_PAGE_SIZE = 100;
 
     function placeholder ($scope) {
         const vm = this;
@@ -90,6 +90,8 @@ define(function(require) {
                     return;
                 }
 
+                const inventoryBinracks = response.result.Results;
+
                 const query2 = `
                     SELECT  
                         nOrderId
@@ -102,7 +104,8 @@ define(function(require) {
                 `;
                 
                 dashboardService.ExecuteCustomScriptQuery(query2, function(responce){
-                    const rowData = ordersToRowData(orders, viewOrders, response.result.Results, responce.result.Results);
+                    orders = orders.sort((a, b) => new Date(a.GeneralInfo.ReceivedDate) - new Date(b.GeneralInfo.ReceivedDate));
+                    const rowData = ordersToRowData(orders, viewOrders, inventoryBinracks, responce.result.Results);
                     
                     const csv = createCSVFromObjects(rowData);
 
@@ -149,71 +152,105 @@ define(function(require) {
             window.URL.revokeObjectURL(link);
         }
 
-        function ordersToRowData(orders, viewOrders, itemsBinracks, identifiers) {
+        function ordersToRowData(orders, viewOrders, inventoryBinracks, identifiers) {
             const rowData = [];
             const accountHash = JSON.parse(window.localStorage.getItem('SPA_auth_session')).md5Hash;
-            for (const order of orders) { 
+            for (const order of orders) {
                 const viewOrder = viewOrders.find(v => v.NumOrderId === order.NumOrderId);
                 const orderIdentifiers = identifiers.find(i => i.nOrderId)?.Identifiers;
                 for (const item of order.Items) {
-                    const binRack = itemsBinracks.find(i => i.fkStockitemId === item.StockItemId && item.Quantity <= Number(i.Quantity));
+                    const binRacks = getItemBinRacks(item, inventoryBinracks);
+                    if (!binRacks.length) {
+                        binRacks.push({BinRack: '', Quantity: 0});
+                    }
                     const orderDate = new Date(order.GeneralInfo.ReceivedDate);
                     const imageUrl = item.ImageId ? `https://s3-eu-west-1.amazonaws.com/images.linnlive.com/${accountHash}/${item.ImageId}.jpg` : '';
 
-                    const data = {
-                        'Order Id': order.NumOrderId,
-                        'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
-                        'Status': statusToString(order.GeneralInfo?.Status),
-                        'Tag': !!order.GeneralInfo?.Marker ? `Tag ${order.GeneralInfo?.Marker}` : '',
-                        'Source': order.GeneralInfo?.Source ?? '',
-                        'SubSource': order.GeneralInfo?.SubSource ?? '',
-                        'Invoice Is Printed': boolToString(order.GeneralInfo?.InvoicePrinted),
-                        'Picklist Is Printed': boolToString(order.GeneralInfo?.PickListPrinted),
-                        'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
-                        'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
-                        'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
-                        'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
-                        'Identifiers': orderIdentifiers ?? 'None',
-                        'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
-                        'Vendor': order.ShippingInfo?.Vendor ?? '',
-                        'Service': order.ShippingInfo?.PostalServiceName ?? '',
-                        'Packaging Type': order.ShippingInfo?.PackageType ?? '',
-                        'Total Weight': order.ShippingInfo?.TotalWeight ?? '',
-                        'Name': order.CustomerInfo?.Address?.FullName ?? '', 
-                        'Company': order.CustomerInfo?.Address?.Company ?? '',
-                        'Town': order.CustomerInfo?.Address?.Town ?? '',
-                        'Postcode': order.CustomerInfo?.Address?.PostCode ?? '',
-                        'Country': order.CustomerInfo?.Address?.Country ?? '',
-                        'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
-                        'Folder': order.FolderName?.join(', ') ?? '',
-                        'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
-                        'Image': imageUrl,
-                        'Quantity': item.Quantity ?? '',
-                        'Line Totals': round(item.CostIncTax, 2) ?? '',
-                        'SKU': item.SKU ?? '',
-                        'Title': item.Title ?? '',
-                        'Sub Total': round(order.TotalsInfo?.Subtotal + order.TotalsInfo?.PostageCost, 2) ?? '',
-                        'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
-                        'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
-                        'Bin Rack': binRack?.BinRack ?? '' 
-                    };
+                    for (const binRack of binRacks) {
+                        const data = {
+                            'Order Id': order.NumOrderId,
+                            'External Reference': order.GeneralInfo?.ExternalReferenceNum ?? '',
+                            'Status': statusToString(order.GeneralInfo?.Status),
+                            'Tag': !!order.GeneralInfo?.Marker ? `Tag ${order.GeneralInfo?.Marker}` : '',
+                            'Source': order.GeneralInfo?.Source ?? '',
+                            'SubSource': order.GeneralInfo?.SubSource ?? '',
+                            'Invoice Is Printed': boolToString(order.GeneralInfo?.InvoicePrinted),
+                            'Picklist Is Printed': boolToString(order.GeneralInfo?.PickListPrinted),
+                            'Shipping Label Printed': boolToString(order.GeneralInfo?.LabelPrinted),
+                            'Order Is Parked': boolToString(viewOrder.GeneralInfo?.IsParked),
+                            'Is Locked': boolToString(order.GeneralInfo?.HoldOrCancel),
+                            'Received Date': `${orderDate.getDate()}/${orderDate.getMonth()+1}/${orderDate.getFullYear()} ${orderDate.getHours()}:${orderDate.getMinutes()}`,
+                            'Identifiers': orderIdentifiers ?? 'None',
+                            'Tracking Number': order.ShippingInfo?.TrackingNumber ?? '',
+                            'Vendor': order.ShippingInfo?.Vendor ?? '',
+                            'Service': order.ShippingInfo?.PostalServiceName ?? '',
+                            'Packaging Type': order.ShippingInfo?.PackageType ?? '',
+                            'Total Weight': order.ShippingInfo?.TotalWeight ?? '',
+                            'Name': order.CustomerInfo?.Address?.FullName ?? '', 
+                            'Company': order.CustomerInfo?.Address?.Company ?? '',
+                            'Town': order.CustomerInfo?.Address?.Town ?? '',
+                            'Postcode': order.CustomerInfo?.Address?.PostCode ?? '',
+                            'Country': order.CustomerInfo?.Address?.Country ?? '',
+                            'Email Address': order.CustomerInfo?.Address?.EmailAddress ?? '',
+                            'Folder': order.FolderName?.join(', ') ?? '',
+                            'Fulfillment State': viewOrder?.Fulfillment?.FulfillmentState ?? '',
+                            'Image': imageUrl,
+                            'Quantity': item.Quantity ?? '',
+                            'Line Totals': round(item.CostIncTax, 2) ?? '',
+                            'SKU': item.SKU ?? '',
+                            'Title': item.Title ?? '',
+                            'Sub Total': round(order.TotalsInfo?.Subtotal + order.TotalsInfo?.PostageCost, 2) ?? '',
+                            'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
+                            'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
+                            'Bin Rack': binRack?.BinRack ?? '' 
+                        };
 
-                    rowData.push(data);
+                        rowData.push(data);
+                    }
                 }
             }
 
             return rowData;
         }
 
+        function getItemBinRacks(item, inventoryBinracks){
+            let quantity = item.Quantity;
+            const binRacks = [];
+
+            while (quantity > 0) {
+                const binRack = inventoryBinracks.find(b => b.fkStockitemId == item.fkStockItemId && b.Quantity > 0);
+
+                if (!binRack) 
+                    break;
+
+                if (binRack.Quantity > item.Quantity) {
+                    binRacks.push({ BinRack: binRack.BinRack, Quantity: item.Quantity });
+                    quantity -= item.Quantity;
+                    binRack.Quantity -= item.Quantity;
+                } else {
+                    binRacks.push({ BinRack: binRack.BinRack, Quantity: binRack.Quantity });
+                    quantity -= binRack.Quantity;
+                    binRack.Quantity -= binRack.Quantity;
+                }
+            }
+
+            if (quantity > 0 && binRacks.length > 0) {
+                const last = binRacks[binRacks.length - 1];
+                binRacks.push({ BinRack: last.BinRack, Quantity: -quantity });
+            }
+
+            return binRacks;
+        }
+
         function round (number, dig) {
-            if(!number) 
+            if (!number) 
                 return 0;
             const mul = Math.pow(10, dig)
             return Math.round(number * mul) / mul;
         }
 
         function statusToString(status) {
-            switch(status){
+            switch (status) {
                 case 0:
                     return 'Unpaid';
                 case 1:
