@@ -202,7 +202,8 @@ define(function(require) {
                             'Sub Total': round(order.TotalsInfo?.Subtotal + order.TotalsInfo?.PostageCost, 2) ?? '',
                             'Tax': round(order.TotalsInfo?.Tax, 2) ?? '',
                             'Total Charge': round(order.TotalsInfo?.TotalCharge, 2) ?? '',
-                            'Bin Rack': binRack?.BinRack ?? '' 
+                            'Bin Rack': binRack?.BinRack ?? '',
+                            'Pickup quantity': binRack?.Quantity ?? ''
                         };
 
                         rowData.push(data);
@@ -218,7 +219,7 @@ define(function(require) {
             const binRacks = [];
 
             while (quantity > 0) {
-                const binRack = inventoryBinracks.find(b => b.fkStockitemId == item.fkStockItemId && b.Quantity > 0);
+                const binRack = inventoryBinracks.find(b => b.fkStockitemId == item.StockItemId && b.Quantity > 0);
 
                 if (!binRack) 
                     break;
