@@ -104,7 +104,7 @@ define(function(require) {
                 `;
                 
                 dashboardService.ExecuteCustomScriptQuery(query2, function(responce){
-                    orders = orders.sort((a, b) => new Date(a.GeneralInfo.ReceivedDate) - new Date(b.GeneralInfo.ReceivedDate));
+                    orders.sort((a, b) => new Date(a.GeneralInfo.ReceivedDate) - new Date(b.GeneralInfo.ReceivedDate));
                     const rowData = ordersToRowData(orders, viewOrders, inventoryBinracks, responce.result.Results);
                     
                     const csv = createCSVFromObjects(rowData);
