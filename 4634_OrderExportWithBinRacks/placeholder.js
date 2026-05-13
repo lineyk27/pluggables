@@ -27,8 +27,8 @@ define(function(require) {
         vm.scope = $scope;
 
         vm.onClick = () => {
-            const ids = vm.scope.$parent.viewStats?.selected_orders?.map(o => o.id) ?? [];
-            const viewOrders = vm.scope.$parent.viewStats?.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
+            const ids = vm.scope.$parent.viewStats?.selected_orders.map(o => o.id) ?? [];
+            const viewOrders = vm.scope.$parent.viewStats.orders?.filter(o => ids.findIndex(i => i == o.OrderId) > -1) ?? [];
 
             if (!ids.length)
                 return;
@@ -108,7 +108,7 @@ define(function(require) {
                     const rowData = ordersToRowData(orders, viewOrders, inventoryBinracks, responce.result.Results);
                     
                     const csv = createCSVFromObjects(rowData);
-
+                    
                     const date = new Date();
                     const fileName = `OpenOrders_Export_${date.getDate()}_${date.getMonth()+1}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}.csv`;
                     const blobURL = URL.createObjectURL(new Blob([csv], { type: "text/plain" }));

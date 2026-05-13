@@ -17,7 +17,7 @@
     docReady.then(() => {
         return new Promise((resolve) => {
             const tabsReadyObserver = new MutationObserver((mutationsList, observer) => {
-                const targetNode = document.querySelector("legacy-windows-container");
+                const targetNode = document.querySelector(".legacy-windows-container");
 
                 if (targetNode) {
                     observer.disconnect();
